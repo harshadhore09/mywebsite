@@ -13,22 +13,21 @@ indicator. These files keep the three copies in step and prove they behave.
 | `before-after.js` | runs the pre-change script (from git) against the new one. `node tools/slide-rail/before-after.js MBG_index.html` |
 
 ```
-npm i --prefix /tmp jsdom            # only dependency
-node tools/slide-rail/test.js        # 68 assertions
+npm i --prefix /tmp jsdom            # test-only dependency
+node tools/lazy-slides/test.js       # 4 loader tests
+node tools/slide-rail/test.js        # 64 assertions
 JSDOM_PATH=./node_modules/jsdom node tools/slide-rail/test.js   # if jsdom is elsewhere
 ```
 
-The rail assertions pass for MBG and Medical Adherence. The suite then checks a
-`.pnav-count` control that the current Medical Adherence header no longer has
-(its page indicator was replaced by this rail), so it stops there with a
-TypeError. That check is stale, not a rail failure.
+The suite passes for all three case studies. It also checks that the shared
+project menu still contains all three case-study links.
 
 ## What the harness does and does not simulate
 
 jsdom has no layout engine, so slide geometry is supplied instead. Heights are
-read from each slide's own `<svg viewBox>` in the parsed DOM and scaled to the
-modelled viewport — there is no fixture file to go stale. Pill widths use an
-approximate 0.55em-per-glyph metric.
+read from an inline slide's `<svg viewBox>` or the width/height metadata on its
+lazy fragment mount, then scaled to the modelled viewport — there is no fixture
+file to go stale. Pill widths use an approximate 0.55em-per-glyph metric.
 
 Everything under test is the shipped code: slide discovery, rail construction,
 the active-slide calculation, the pill-reveal arithmetic, and the

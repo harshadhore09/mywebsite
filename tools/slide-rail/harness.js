@@ -117,14 +117,20 @@ function loadPage(file, cfg, opts) {
   const doc = window.document;
 
   /* ---------------- layout model ---------------- */
-  // Slide heights come from the artwork's own viewBox aspect ratio, read out
-  // of the parsed DOM -- no separate fixture to drift out of date.
+  // Geometry comes from the artwork's own viewBox or dimensions kept on its
+  // lazy fragment mount -- no separate fixture can drift.
   const slides = Array.prototype.slice.call(doc.querySelectorAll(cfg.slideSel));
   const vbHeight = (el) => {
     const svg = el.querySelector('svg[viewBox]');
-    const parts = svg ? svg.getAttribute('viewBox').trim().split(/[\s,]+/).map(Number) : [];
-    if (parts.length !== 4 || !parts[3]) throw new Error(file + ': slide ' + el.id + ' has no usable viewBox');
-    return parts[3];
+    if (svg) {
+      const parts = svg.getAttribute('viewBox').trim().split(/[\s,]+/).map(Number);
+      if (parts.length === 4 && parts[2] && parts[3]) return parts[3] * cfg.artWidth / parts[2];
+    }
+    const art = el.querySelector('.slide-art[data-slide-src][data-art-width][data-art-height]');
+    const width = art ? Number(art.getAttribute('data-art-width')) : 0;
+    const height = art ? Number(art.getAttribute('data-art-height')) : 0;
+    if (width > 0 && height > 0) return height * cfg.artWidth / width;
+    throw new Error(file + ': slide ' + el.id + ' has no usable artwork dimensions');
   };
   const scale = Math.min(cfg.vw, cfg.artWidth) / cfg.artWidth;
   const heights = slides.map((el) => Math.round(vbHeight(el) * scale));

@@ -4,10 +4,13 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Harsha Dhore • MDes IIT Delhi</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;700&amp;family=Inter:wght@300;400;500;600&amp;family=Space+Grotesk:wght@500;600&amp;display=swap">
+  <link rel="stylesheet" href="./assets/tailwind.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;700&amp;family=Inter:wght@300;400;500;600&amp;family=Space+Grotesk:wght@500;600&amp;display=swap');
     
     :root {
       --cream: #F8F5EF;
@@ -187,7 +190,6 @@
       display: inline-block;
       transition: transform .45s cubic-bezier(.22,1,.36,1),
                   color .35s ease, text-shadow .35s ease;
-      will-change: transform;
     }
     .hero-name .ltr.space { width: .26em; }
     .hero-name:hover .ltr { color: #B43A34; }
@@ -286,7 +288,6 @@
       overflow: hidden;
       isolation: isolate;
       transition: transform .25s cubic-bezier(.22,1,.36,1), box-shadow .3s ease, color .3s ease;
-      will-change: transform;
     }
     .hbtn::before {
       content: '';
@@ -445,7 +446,6 @@
       overflow: hidden;
       transition: transform .3s cubic-bezier(.22,1,.36,1),
                   color .3s ease, border-color .3s ease, box-shadow .35s ease;
-      will-change: transform;
     }
     /* colour floods up from the bottom in the brand colour */
     .soc::before {
@@ -780,7 +780,7 @@
     /* ---- right card ---- */
     .about-tilt {
       transition: transform .35s cubic-bezier(.22,1,.36,1), box-shadow .35s ease;
-      transform-style: preserve-3d; will-change: transform;
+      transform-style: preserve-3d;
       position: sticky; top: 104px;
     }
     @media (max-width: 900px) { .about-tilt { position: static; } }
@@ -918,7 +918,6 @@
       cursor: pointer; font-family: inherit;
       transition: transform .3s cubic-bezier(.3,1.5,.5,1), box-shadow .3s ease,
                   color .25s ease, border-color .25s ease, opacity .3s ease;
-      will-change: transform;
     }
     /* left colour rail per category */
     .tk-chip::before {
@@ -1293,7 +1292,7 @@
         <!-- Project 1: Pragati -->
         <a href="MBG_index.html" class="work-card tilt" data-tilt>
           <div class="h-56 overflow-hidden relative">
-            <img src="./images/MBG.png" 
+            <img src="./images/MBG.webp" width="933" height="700" loading="lazy" decoding="async"
                  class="w-full h-full object-cover" alt="Pragati - Financial toolkit">
             <div class="absolute top-4 left-4">
               <span class="text-xs font-semibold px-3 py-1 bg-white/95 text-[#2B2228] rounded-full shadow-sm">Behavioural Design</span>
@@ -1314,7 +1313,7 @@
         <!-- Project 2: Food Delivery: Waiting Anxiety -->
         <a href="StrategicUX_index.html" class="work-card tilt" data-tilt>
           <div class="h-56 overflow-hidden relative">
-            <img src="./images/Food_delivery.png" 
+            <img src="./images/Food_delivery.webp" width="1000" height="563" loading="lazy" decoding="async"
                  class="w-full h-full object-cover" alt="Shiru Cafe">
             <div class="absolute top-4 left-4">
               <span class="text-xs font-semibold px-3 py-1 bg-white/95 text-[#2B2228] rounded-full shadow-sm">Strategic UX</span>
@@ -1334,7 +1333,7 @@
         <!-- Project 3: Medical Adherence -->
         <a href="MedicalAdher_index.html" class="work-card tilt" data-tilt>
           <div class="h-56 overflow-hidden relative">
-            <img src="./images/Medical_adhrence.png" 
+            <img src="./images/Medical_adhrence.webp" width="700" height="700" loading="lazy" decoding="async"
                  class="w-full h-full object-cover" alt="AI Photoshop 2030">
             <div class="absolute top-4 left-4">
               <span class="text-xs font-semibold px-3 py-1 bg-white/95 text-[#2B2228] rounded-full shadow-sm">Design Probe</span>
@@ -1630,7 +1629,7 @@
     <a href="#contact" title="Contact"><i class="fas fa-envelope"></i></a>
   </nav>
 
-  <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+  <script>
     // Tailwind script
     function initTailwind() {
       document.documentElement.style.setProperty('--accent', '#C17A5F');
@@ -1646,26 +1645,36 @@
 
       let mouseX = 0, mouseY = 0;
       let cursorX = 0, cursorY = 0;
+      let cursorFrame = 0;
+
+      function animateCursor() {
+        const dx = mouseX - cursorX;
+        const dy = mouseY - cursorY;
+        if (Math.abs(dx) < 0.1 && Math.abs(dy) < 0.1) {
+          cursorX = mouseX;
+          cursorY = mouseY;
+          cursor.style.left = `${cursorX}px`;
+          cursor.style.top = `${cursorY}px`;
+          cursorFrame = 0;
+          return;
+        }
+
+        cursorX += dx * 0.16;
+        cursorY += dy * 0.16;
+        cursor.style.left = `${cursorX}px`;
+        cursor.style.top = `${cursorY}px`;
+        cursorFrame = requestAnimationFrame(animateCursor);
+      }
 
       document.addEventListener('mousemove', (e) => {
         mouseX = e.clientX;
         mouseY = e.clientY;
-        
-        // Update dot immediately
+
+        // Update dot immediately; animate the outer cursor only while moving.
         cursorDot.style.left = `${mouseX}px`;
         cursorDot.style.top = `${mouseY}px`;
-      });
-
-      function animateCursor() {
-        cursorX += (mouseX - cursorX) * 0.16;
-        cursorY += (mouseY - cursorY) * 0.16;
-
-        cursor.style.left = `${cursorX}px`;
-        cursor.style.top = `${cursorY}px`;
-
-        requestAnimationFrame(animateCursor);
-      }
-      animateCursor();
+        if (!cursorFrame) cursorFrame = requestAnimationFrame(animateCursor);
+      }, { passive: true });
 
       // Hover scaling on interactive elements
       const interactiveElements = document.querySelectorAll('a, button, .work-card, .tk-chip, .sticker, .btn, .nav-dock a');
@@ -1686,7 +1695,7 @@
       document.addEventListener('touchstart', () => {
         cursor.style.display = 'none';
         cursorDot.style.display = 'none';
-      });
+      }, { passive: true, once: true });
     }
 
     // === STRONG MOUSE-REACTIVE BACKGROUND ===
@@ -1711,9 +1720,6 @@
       const orb2 = document.getElementById('orb2');
       const orb3 = document.getElementById('orb3');
 
-      let targetX = mouseX;
-      let targetY = mouseY;
-
       // Particles for canvas
       let particles = [];
       
@@ -1729,46 +1735,58 @@
         };
       }
 
-      // Mouse tracking
-      document.addEventListener('mousemove', (e) => {
-        targetX = e.clientX;
-        targetY = e.clientY;
+      // Coalesce high-frequency pointer events to one visual update per frame.
+      let pendingPointer = null;
+      let pointerFrame = 0;
+      function applyPointer() {
+        pointerFrame = 0;
+        if (!pendingPointer) return;
+        const { x, y } = pendingPointer;
+        pendingPointer = null;
 
-        // Update spotlight position
-        spotlight.style.setProperty('--mouse-x', `${e.clientX}px`);
-        spotlight.style.setProperty('--mouse-y', `${e.clientY}px`);
-
-        // Create subtle particles on move
-        if (Math.random() < 0.6) {
-          particles.push(createParticle(e.clientX, e.clientY));
+        spotlight.style.setProperty('--mouse-x', `${x}px`);
+        spotlight.style.setProperty('--mouse-y', `${y}px`);
+        if (particles.length < 42 && Math.random() < 0.6) {
+          particles.push(createParticle(x, y));
         }
 
-        // Strong orb reaction
-        const dx1 = (e.clientX - window.innerWidth * 0.15) * 0.022;
-        const dy1 = (e.clientY - window.innerHeight * 0.18) * 0.022;
-        
-        const dx2 = (e.clientX - window.innerWidth * 0.78) * 0.018;
-        const dy2 = (e.clientY - window.innerHeight * 0.62) * 0.018;
-        
-        const dx3 = (e.clientX - window.innerWidth * 0.32) * 0.027;
-        const dy3 = (e.clientY - window.innerHeight * 0.82) * 0.027;
+        const dx1 = (x - window.innerWidth * 0.15) * 0.022;
+        const dy1 = (y - window.innerHeight * 0.18) * 0.022;
+        const dx2 = (x - window.innerWidth * 0.78) * 0.018;
+        const dy2 = (y - window.innerHeight * 0.62) * 0.018;
+        const dx3 = (x - window.innerWidth * 0.32) * 0.027;
+        const dy3 = (y - window.innerHeight * 0.82) * 0.027;
 
         orb1.style.transform = `translate(${dx1}px, ${dy1}px)`;
         orb2.style.transform = `translate(${dx2}px, ${dy2}px)`;
         orb3.style.transform = `translate(${dx3}px, ${dy3}px)`;
-      });
+      }
+      document.addEventListener('mousemove', (e) => {
+        pendingPointer = { x: e.clientX, y: e.clientY };
+        if (!pointerFrame) pointerFrame = requestAnimationFrame(applyPointer);
+      }, { passive: true });
 
-      // Canvas particle system
-      function drawParticles() {
+      // Canvas particles move slowly, so 30fps is visually identical while
+      // halving full-viewport canvas work. Pause altogether for hidden tabs.
+      let lastParticleFrame = 0;
+      let particleFrame = 0;
+      function drawParticles(now) {
+        particleFrame = 0;
+        if (document.hidden) return;
+        if (lastParticleFrame && now - lastParticleFrame < 1000 / 30) {
+          particleFrame = requestAnimationFrame(drawParticles);
+          return;
+        }
+        const elapsed = lastParticleFrame ? Math.min(3, (now - lastParticleFrame) / 16.667) : 1;
+        lastParticleFrame = now;
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
         for (let i = particles.length - 1; i >= 0; i--) {
           const p = particles[i];
-          
-          p.x += p.speedX;
-          p.y += p.speedY;
-          p.life -= 1.2;
-          p.size *= 0.985;
+          p.x += p.speedX * elapsed;
+          p.y += p.speedY * elapsed;
+          p.life -= 1.2 * elapsed;
+          p.size *= Math.pow(0.985, elapsed);
 
           if (p.life <= 0 || p.size < 0.3) {
             particles.splice(i, 1);
@@ -1784,21 +1802,32 @@
           ctx.restore();
         }
 
-        // Occasionally add ambient particles
-        if (Math.random() < 0.12 && particles.length < 42) {
+        // Keep the same ambient rate despite the lower draw frequency.
+        if (Math.random() < 0.12 * elapsed && particles.length < 42) {
           particles.push(createParticle(
-            Math.random() * canvas.width, 
+            Math.random() * canvas.width,
             Math.random() * canvas.height * 0.95
           ));
         }
 
-        requestAnimationFrame(drawParticles);
+        particleFrame = requestAnimationFrame(drawParticles);
       }
-
-      drawParticles();
+      function startParticles() {
+        if (!particleFrame && !document.hidden) particleFrame = requestAnimationFrame(drawParticles);
+      }
+      document.addEventListener('visibilitychange', () => {
+        if (document.hidden && particleFrame) {
+          cancelAnimationFrame(particleFrame);
+          particleFrame = 0;
+        } else {
+          startParticles();
+        }
+      });
+      startParticles();
 
       // Gentle continuous orb movement
       setInterval(() => {
+        if (document.hidden) return;
         if (Math.random() < 0.35) {
           const currentTransform1 = orb1.style.transform || 'translate(0px, 0px)';
           orb1.style.transitionDuration = '2.1s';
@@ -2118,40 +2147,48 @@
       progressBar.style.cssText = 'position:fixed;top:0;left:0;height:2.5px;background:linear-gradient(to right, #C17A5F, #E8A9C3);z-index:9999;transition:width 0.05s ease;';
       document.body.appendChild(progressBar);
 
+      let progressPending = false;
       window.addEventListener('scroll', () => {
-        const scrollTop = window.scrollY;
-        const height = document.documentElement.scrollHeight - window.innerHeight;
-        const scrolled = (height > 0) ? (scrollTop / height) * 100 : 0;
-        progressBar.style.width = scrolled + '%';
-      });
+        if (progressPending) return;
+        progressPending = true;
+        requestAnimationFrame(() => {
+          const scrollTop = window.scrollY;
+          const height = document.documentElement.scrollHeight - window.innerHeight;
+          const scrolled = (height > 0) ? (scrollTop / height) * 100 : 0;
+          progressBar.style.width = scrolled + '%';
+          progressPending = false;
+        });
+      }, { passive: true });
     }
 
     // === NAV DOCK ACTIVE STATE ===
     function initNavDock() {
-      const navLinks = document.querySelectorAll('.nav-dock a');
-      const sections = ['work', 'about', 'toolkit', 'contact'];
-      
-      window.addEventListener('scroll', () => {
+      const navLinks = Array.from(document.querySelectorAll('.nav-dock a'));
+      const sections = ['work', 'about', 'toolkit', 'contact']
+        .map(id => document.getElementById(id)).filter(Boolean);
+      let activeSection = '';
+      let updatePending = false;
+
+      function updateNav() {
         let current = '';
-        
-        sections.forEach(id => {
-          const section = document.getElementById(id);
-          if (!section) return;
-          
-          const sectionTop = section.getBoundingClientRect().top;
-          if (sectionTop <= 160) {
-            current = id;
-          }
+        sections.forEach(section => {
+          if (section.getBoundingClientRect().top <= 160) current = section.id;
         });
-        
-        navLinks.forEach(link => {
-          link.classList.remove('active');
-          const href = link.getAttribute('href');
-          if (href && href.includes(current)) {
-            link.classList.add('active');
-          }
-        });
-      });
+        if (current !== activeSection) {
+          activeSection = current;
+          navLinks.forEach(link => {
+            const href = link.getAttribute('href') || '';
+            link.classList.toggle('active', Boolean(current) && href === '#' + current);
+          });
+        }
+        updatePending = false;
+      }
+
+      window.addEventListener('scroll', () => {
+        if (updatePending) return;
+        updatePending = true;
+        requestAnimationFrame(updateNav);
+      }, { passive: true });
     }
 
     // === KEYBOARD SHORTCUTS ===
@@ -2962,8 +2999,13 @@
       io.observe(root);
     }
 
-    // Boot
-    window.onload = function () { init(); initHeroCopy(); initAbout(); initFooterDock(); initSocials(); initToolkit(); };
+    // Start as soon as the markup is ready; don't wait for remote fonts or images.
+    const bootPortfolio = () => { init(); initHeroCopy(); initAbout(); initFooterDock(); initSocials(); initToolkit(); };
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', bootPortfolio, { once: true });
+    } else {
+      bootPortfolio();
+    }
   </script>
-<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a20d83ae6e26e83d',t:'MTc4NTAwNzE0Nw=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</body>
 </html>
