@@ -31,6 +31,11 @@
 
   /* ---- 2. the strip: reuse an authored one, else build it ---------- */
   const info = (el, i) => {
+    // Medical Adherence and Food Delivery author the name on the slide itself
+    // numbered by position: Food Delivery's authored data-slide skips 24
+    if (el.dataset.screenTitle) {
+      return { num: pad2(i + 1), name: el.dataset.screenTitle.trim() };
+    }
     // MBG stamps "01 — Cover" on the artwork
     const chip = el.querySelector('.slide-num');
     if (chip) {
@@ -103,6 +108,9 @@
     const vh = window.innerHeight || document.documentElement.clientHeight;
     const sr = strip.getBoundingClientRect();
     if (!sr.height) return 0;                      // layout not ready yet
+    // at the very end the last slide can be too short to own the reference
+    // line, so once its foot is on screen the last slide is the current one
+    if (slides[slides.length - 1].getBoundingClientRect().bottom <= vh + 1) return slides.length - 1;
     const top = Math.min(Math.max(sr.bottom, 0), vh);
     const line = top + (vh - top) * 0.34;          // a third of the way down
     for (let i = 0; i < slides.length; i++) {
