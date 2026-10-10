@@ -12,7 +12,8 @@ MBG_CSS = """
 .toc .wrap::-webkit-scrollbar{display:none}
 .toc a{flex:none}
 .toc a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-.slide-sec{scroll-margin-top:calc(var(--nav-h) + 74px)}
+.slide-sec{scroll-margin-top:calc(var(--nav-h) + 46px + 14px)}
+@media (max-width:760px){.toc .wrap{padding:0 12px;gap:5px}.toc a{padding:6px 10px;font-size:11.5px}}
 @media print{.toc{display:none}}
 """
 
