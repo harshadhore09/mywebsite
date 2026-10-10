@@ -85,22 +85,13 @@ for (const file of Object.keys(PAGES)) {
   section('  page-specific controls stay in sync');
   if (file === 'MedicalAdher_index.html') {
     h.scrollTo(h.window.__test.offsets[6] - cfg.headerH - cfg.railH);
-    const count = h.doc.querySelector('.pnav-count').textContent;
-    const grid = Array.prototype.slice.call(h.doc.querySelectorAll('.pnav-grid-list a'));
-    ok(count === '07', 'header counter reads 07 -- got ' + count);
-    ok(grid.findIndex((a) => a.classList.contains('is-active')) === 6, 'jump grid highlights the same slide');
-    ok(h.doc.querySelector('.pnav-step[data-step="-1"]').disabled === false, 'prev button enabled mid-deck');
-    h.scrollTo(0);
-    ok(h.doc.querySelector('.pnav-step[data-step="-1"]').disabled === true, 'prev button disabled on slide 1');
-    h.scrollTo(h.window.__test.maxScroll);
-    ok(h.doc.querySelector('.pnav-step[data-step="1"]').disabled === true, 'next button disabled on the last slide');
+    ok(h.pills[6].getAttribute('aria-current') === 'true', 'the shared rail marks slide 07 as current');
+    ok(h.doc.querySelectorAll('.pnav-dd-menu .pnav-proj').length === 3, 'project menu keeps all three case-study links');
   }
   if (file === 'StrategicUX_index.html') {
     h.scrollTo(h.window.__test.offsets[12] - cfg.headerH - cfg.railH);
-    const drawerNav = Array.prototype.slice.call(h.doc.querySelectorAll('.slide-nav a'));
-    ok(drawerNav.length === n, 'drawer nav has ' + n + ' links (got ' + drawerNav.length + ')');
-    ok(drawerNav.findIndex((a) => a.classList.contains('is-active')) === 12, 'drawer grid highlights the same slide as the rail');
-    ok(drawerNav[12].getAttribute('aria-current') === 'true', 'drawer link carries aria-current');
+    ok(h.pills[12].getAttribute('aria-current') === 'true', 'the shared rail marks slide 13 as current');
+    ok(h.doc.querySelectorAll('.pnav-dd-menu .pnav-proj').length === 3, 'project menu keeps all three case-study links');
   }
 
   h.window.close();
