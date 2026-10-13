@@ -1,53 +1,39 @@
 /* =====================================================================
-   Themed micro-interactions + custom cursor
-   Shared by the three case studies; each page opts in with
-   <html data-project="mbg|food|medical">.
+   Micro-interactions + custom cursor
+   One common package for the three case studies, copied from Pragati
+   (Mahila Bachat Gat) and kept the same on Food Delivery and Medical
+   Adherence. Each page opts in with <html data-project="mbg|food|medical">.
 
    Why a script and not pure CSS: the follower has to track the pointer
-   every frame, and the themed flourish (coin drop, delivery ping,
-   heartbeat) must never run for touch readers or when the reader asked
-   for reduced motion. Everything it creates is aria-hidden and
-   pointer-events:none, so the case studies stay fully usable without it —
-   and the native cursor simply stays if this file never loads.
+   every frame, and the flourish (coin drops, the golden glitter trail)
+   must never run for touch readers or when the reader asked for reduced
+   motion. Everything it creates is aria-hidden and pointer-events:none,
+   so the case studies stay fully usable without it — and the native
+   cursor simply stays if this file never loads.
    ===================================================================== */
 
-/* ---- the three personalities ---------------------------------------- */
+/* ---- the one personality (Pragati / Mahila Bachat Gat's) ------------
+   The cursor is a coin-stamp: a ₹ glyph shows over links, clicks drop
+   small change (coins and a sparkle), and the golden glitter trail that
+   used to live inline on the Pragati page is ported here so all three
+   case studies carry the identical trail. */
+const GLYPH = '<span class="mi-glyph-tx">&#8377;</span>';
 
-/* Pragati — Mahila Bachat Gat: a savings collective, so the cursor is a
-   coin-stamp and clicks drop small change. The page already sprinkles
-   golden glitter behind the pointer, so there is no extra trail here. */
-const MBG_THEME = {
-  glyph: '<span class="mi-glyph-tx">&#8377;</span>',
-  burst: 'coins',
-  trail: null,
-  tilt: false,
-};
+/* The glitter palette and motion are Pragati's, copied verbatim so the
+   trail looks and falls exactly the same on every case study. */
+const GLITTER_COL = ['#ff4d17', '#ffb02e', '#ffd966', '#f2879a', '#fff4d6', '#e8447a'];
+const GLITTER_MAX = 80;
+function glitterShape(c, s) {
+  return '<svg width="' + s + '" height="' + s + '" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 0c.7 6.4 4.9 10.6 12 12-7.1 1.4-11.3 5.6-12 12-.7-6.4-4.9-10.6-12-12C7.1 10.6 11.3 6.4 12 0z" fill="' + c + '"/></svg>';
+}
 
-/* Food Delivery — Waiting Anxiety: hot food in a box, steam behind the
-   pointer, and a tracking ping wherever the reader clicks. */
-const FOOD_THEME = {
-  glyph: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.6 10.2 5.3 4.4h13.4l1.7 5.8"/><path d="M4.6 10.2h14.8v3.1c0 4-3.3 7.2-7.4 7.2s-7.4-3.2-7.4-7.2v-3.1Z"/><path d="M9.6 3.2c.9.9-.9 1.7 0 2.6M14.4 2.8c.9.9-.9 1.7 0 2.6"/></svg>',
-  burst: 'ping',
-  trail: 'steam',
-  tilt: false,
-};
-
-/* Medical Adherence: the follower is a capsule that tilts as it rolls,
-   leaving tumbling dose crumbs, and clicks answer with a heartbeat. */
-const MEDICAL_THEME = {
-  glyph: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 12.5h4l2-5.5 3.5 11 3-5.5 2 2h4"/></svg>',
-  burst: 'beat',
-  trail: 'dose',
-  tilt: true,
-};
-
-const THEMES = {
-  'MBG_index.html': MBG_THEME,
-  'StrategicUX_index.html': FOOD_THEME,
-  'MedicalAdher_index.html': MEDICAL_THEME,
-  mbg: MBG_THEME,
-  food: FOOD_THEME,
-  medical: MEDICAL_THEME,
+const PROJECTS = {
+  'MBG_index.html': 1,
+  'StrategicUX_index.html': 1,
+  'MedicalAdher_index.html': 1,
+  mbg: 1,
+  food: 1,
+  medical: 1,
 };
 
 (() => {
@@ -55,9 +41,8 @@ const THEMES = {
 
   const root = document.documentElement;
   const file = window.location.pathname.split('/').pop();
-  const project = root.dataset.project || THEMES[file] && file || '';
-  const theme = THEMES[project];
-  if (!theme) return;
+  const project = root.dataset.project || (PROJECTS[file] ? file : '');
+  if (!PROJECTS[project]) return;
 
   const mq = (query) => (window.matchMedia ? window.matchMedia(query) : { matches: false, addEventListener() {} });
   const motion = mq('(prefers-reduced-motion: reduce)');
@@ -66,7 +51,6 @@ const THEMES = {
   if (!document.body) return;
 
   const R = (a, b) => a + Math.random() * (b - a);
-  const clamp = (v, lo, hi) => Math.min(hi, Math.max(lo, v));
   const HOVER = 'a, button, [role="button"], summary';
 
   /* ---- build the cursor --------------------------------------------- */
@@ -77,12 +61,18 @@ const THEMES = {
   ring.className = 'mi-ring';
   const glyph = document.createElement('div');
   glyph.className = 'mi-glyph';
-  glyph.innerHTML = theme.glyph;
+  glyph.innerHTML = GLYPH;
   ring.appendChild(glyph);
   const dot = document.createElement('div');
   dot.className = 'mi-dot';
   layer.append(dot, ring);
   document.body.appendChild(layer);
+
+  /* ---- and the glitter trail layer, under the cursor like Pragati's -- */
+  const glitterLayer = document.createElement('div');
+  glitterLayer.className = 'mi-glitter';
+  glitterLayer.setAttribute('aria-hidden', 'true');
+  document.body.appendChild(glitterLayer);
   root.classList.add('mi-cursor-on');
 
   /* ---- state --------------------------------------------------------- */
@@ -92,8 +82,6 @@ const THEMES = {
   let ry = py;
   let scale = 1;
   let targetScale = 1;
-  let tilt = 0;
-  let targetTilt = 0;
   let visible = false;
   let raf = 0;
   let on = true;
@@ -110,18 +98,13 @@ const THEMES = {
     rx += (px - rx) * .22;
     ry += (py - ry) * .22;
     scale += (targetScale - scale) * .18;
-    if (theme.tilt) {
-      targetTilt *= .92;
-      tilt += (targetTilt - tilt) * .14;
-    }
-    ring.style.transform = 'translate3d(' + rx.toFixed(2) + 'px,' + ry.toFixed(2) + 'px,0) scale(' + scale.toFixed(3) + ')' +
-      (theme.tilt ? ' rotate(' + tilt.toFixed(1) + 'deg)' : '');
+    ring.style.transform = 'translate3d(' + rx.toFixed(2) + 'px,' + ry.toFixed(2) + 'px,0) scale(' + scale.toFixed(3) + ')';
     dot.style.transform = 'translate3d(' + px.toFixed(2) + 'px,' + py.toFixed(2) + 'px,0)';
     if (visible) raf = requestAnimationFrame(frame);
   }
   function kick() { if (!raf && visible) raf = requestAnimationFrame(frame); }
 
-  /* ---- themed particles ---------------------------------------------- */
+  /* ---- click particles ----------------------------------------------- */
   const MAX_FX = 90;
   let fxCount = 0;
   function fx(kind, x, y, vars, life) {
@@ -140,45 +123,62 @@ const THEMES = {
     return p;
   }
 
+  /* clicks drop small change — coins kicked out from under the pointer
+     and one bright sparkle, exactly like Pragati's */
   function burst(x, y) {
     if (!on) return;
-    if (theme.burst === 'coins') {
-      for (let i = 0; i < 5; i++) {
-        fx('coin', x, y, {
-          dx: R(-48, 48).toFixed(1) + 'px',
-          dy: R(-58, -8).toFixed(1) + 'px',
-          r: R(-200, 200).toFixed(0) + 'deg',
-          s: R(.7, 1.2).toFixed(2),
-        }, R(620, 880));
-      }
-      fx('sparkle', x, y, { dx: R(-26, 26).toFixed(1) + 'px', dy: R(-44, -10).toFixed(1) + 'px' }, 620);
-    } else if (theme.burst === 'ping') {
-      fx('ping', x, y, null, 640);
-      window.setTimeout(() => fx('ping', x, y, null, 640), 130);
-    } else if (theme.burst === 'beat') {
-      fx('beat', x, y, null, 720);
-      window.setTimeout(() => fx('beat', x, y, null, 720), 150);
+    for (let i = 0; i < 5; i++) {
+      fx('coin', x, y, {
+        dx: R(-48, 48).toFixed(1) + 'px',
+        dy: R(-58, -8).toFixed(1) + 'px',
+        r: R(-200, 200).toFixed(0) + 'deg',
+        s: R(.7, 1.2).toFixed(2),
+      }, R(620, 880));
     }
+    fx('sparkle', x, y, { dx: R(-26, 26).toFixed(1) + 'px', dy: R(-44, -10).toFixed(1) + 'px' }, 620);
   }
 
-  let trailX = 0;
-  let trailY = 0;
-  let trailAt = 0;
+  /* ---- the golden glitter trail (Pragati's, shared by all three) ----- */
+  let glitterAlive = 0;
+  let gLast = 0;
+  let gX = 0;
+  let gY = 0;
+  function spawnGlitter(x, y) {
+    if (!on || glitterAlive >= GLITTER_MAX) return;
+    const p = document.createElement('div');
+    p.className = 'gp';
+    const c = GLITTER_COL[(Math.random() * GLITTER_COL.length) | 0];
+    const life = R(800, 1400);
+    p.innerHTML = glitterShape(c, R(7, 14));
+    p.style.left = (x + R(-6, 6)) + 'px';
+    p.style.top = (y + R(-6, 6)) + 'px';
+    p.style.setProperty('--dx', R(-40, 40) + 'px');
+    p.style.setProperty('--dy', R(-35, 10) + 'px');
+    p.style.setProperty('--grav', R(30, 65) + 'px');
+    p.style.setProperty('--life', life + 'ms');
+    glitterLayer.appendChild(p);
+    glitterAlive++;
+    let dead = false;
+    const kill = () => {
+      if (dead) return;
+      dead = true;
+      if (p.isConnected) p.remove();
+      glitterAlive--;
+    };
+    p.addEventListener('animationend', kill, { once: true });
+    window.setTimeout(kill, life + 260);
+  }
+
+  /* same cadence as the Pragati page: a sparkle every ~28ms once the
+     pointer has travelled 16px */
   function trail(x, y) {
-    if (!theme.trail) return;
+    const d = Math.hypot(x - gX, y - gY);
     const now = performance.now();
-    if (Math.hypot(x - trailX, y - trailY) < 18 || now - trailAt < 60) return;
-    trailAt = now;
-    trailX = x;
-    trailY = y;
-    if (theme.trail === 'steam') {
-      fx('steam', x, y, { dx: R(-8, 8).toFixed(1) + 'px' }, 950);
-    } else {
-      fx('dose', x, y, {
-        dx: R(-10, 10).toFixed(1) + 'px',
-        dy: R(18, 34).toFixed(1) + 'px',
-        r: R(-40, 40).toFixed(0) + 'deg',
-      }, 820);
+    if (d > 16 && now - gLast > 28) {
+      spawnGlitter(x, y);
+      gLast = now;
+      gX = x;
+      gY = y;
     }
   }
 
@@ -187,7 +187,6 @@ const THEMES = {
     if (!on || (e.pointerType && e.pointerType !== 'mouse')) return;
     px = e.clientX;
     py = e.clientY;
-    if (theme.tilt) targetTilt = clamp((px - rx) * 1.4, -16, 16);
     if (!visible) {
       // snap the follower to the pointer on (re)entry instead of flying in
       visible = true;
@@ -243,6 +242,7 @@ const THEMES = {
     if (raf) cancelAnimationFrame(raf);
     raf = 0;
     layer.remove();
+    glitterLayer.remove();
     root.classList.remove('mi-cursor-on');
   }
   if (motion.addEventListener) motion.addEventListener('change', (e) => { if (e.matches) teardown(); });

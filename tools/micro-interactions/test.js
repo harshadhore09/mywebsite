@@ -45,9 +45,11 @@ async function main() {
     assert.match(html, /<script src="\.\/scripts\/micro-interactions\.js" defer><\/script>/, `${page}: script`);
   }
   const css = fs.readFileSync(path.join(root, 'assets/micro-interactions.css'), 'utf8');
-  for (const project of Object.values(pages)) {
-    assert.ok(css.includes(`html[data-project="${project}"]`), `css tokens for ${project}`);
-  }
+  assert.ok(css.includes('html[data-project] {'), 'shared css tokens');
+  assert.ok(css.includes('--mi-accent'), 'shared accent token');
+  assert.ok(!/data-project="(mbg|food|medical)"/.test(css), 'no per-project divergence in the css');
+  assert.ok(css.includes('#prog::after') && css.includes('.progress-bar::after'), 'gold coin on either progress bar');
+  assert.ok(css.includes('.mi-glitter') && css.includes('@keyframes gfall') && css.includes('.gp '), 'shared glitter styles');
   assert.match(css, /prefers-reduced-motion: reduce/, 'css respects reduced motion');
   assert.match(css, /@media print/, 'css respects print');
 
@@ -59,8 +61,10 @@ async function main() {
     assert.ok(layer.querySelector('.mi-ring'), `${page}: ring`);
     assert.ok(layer.querySelector('.mi-dot'), `${page}: dot`);
     assert.ok(layer.querySelector('.mi-glyph'), `${page}: glyph`);
+    assert.ok(w.document.querySelector('.mi-glitter'), `${page}: glitter layer`);
     assert.ok(w.document.documentElement.classList.contains('mi-cursor-on'), `${page}: native cursor retired`);
     assert.equal(layer.getAttribute('aria-hidden'), 'true', `${page}: decorative`);
+    assert.equal(w.document.querySelector('.mi-glitter').getAttribute('aria-hidden'), 'true', `${page}: glitter decorative`);
 
     pointer('pointermove', 120, 240);
     await frames();
@@ -87,59 +91,34 @@ async function main() {
     dom.window.close();
   }
 
-  /* ---- 4. themed click bursts ------------------------------------------ */
-  {
-    const { dom, w, pointer } = harness('MBG_index.html');
+  /* ---- 4. the same click burst on every page (Pragati's coins) --------- */
+  const signatures = [];
+  for (const [page] of Object.entries(pages)) {
+    const { dom, w, pointer } = harness(page);
     pointer('pointerdown', 100, 100);
     const layer = w.document.querySelector('.mi-layer');
-    assert.equal(layer.querySelectorAll('.mi-fx--coin').length, 5, 'savings theme drops coins');
-    assert.equal(layer.querySelectorAll('.mi-fx--sparkle').length, 1, 'savings theme sparkle');
+    const coins = layer.querySelectorAll('.mi-fx--coin').length;
+    const sparkles = layer.querySelectorAll('.mi-fx--sparkle').length;
+    assert.equal(coins, 5, `${page}: drops small change`);
+    assert.equal(sparkles, 1, `${page}: one bright sparkle`);
+    const glyphTx = layer.querySelector('.mi-glyph-tx');
+    assert.equal(glyphTx && glyphTx.textContent, '\u20B9', `${page}: rupee glyph, same as Pragati`);
+    signatures.push(`${coins}/${sparkles}/${glyphTx.textContent}`);
     dom.window.close();
   }
-  {
-    const { dom, w, pointer } = harness('StrategicUX_index.html');
-    pointer('pointerdown', 100, 100);
-    const layer = w.document.querySelector('.mi-layer');
-    assert.ok(layer.querySelectorAll('.mi-fx--ping').length >= 1, 'delivery theme pings');
-    assert.match(layer.querySelector('.mi-glyph').innerHTML, /<svg/, 'delivery glyph is artwork');
-    dom.window.close();
-  }
-  {
-    const { dom, w, pointer } = harness('MedicalAdher_index.html');
-    pointer('pointerdown', 100, 100);
-    const layer = w.document.querySelector('.mi-layer');
-    assert.ok(layer.querySelectorAll('.mi-fx--beat').length >= 1, 'medical theme heartbeats');
-    assert.match(layer.querySelector('.mi-glyph').innerHTML, /<svg/, 'medical glyph is artwork');
-    dom.window.close();
-  }
+  assert.equal(new Set(signatures).size, 1, 'every project shares the identical click burst');
 
-  /* ---- 5. themed pointer trails ---------------------------------------- */
-  {
-    // MBG already sprinkles golden glitter, so its cursor leaves no trail
-    const { dom, w, pointer } = harness('MBG_index.html');
+  /* ---- 5. the same golden glitter trail on every page ------------------ */
+  for (const [page] of Object.entries(pages)) {
+    const { dom, w, pointer } = harness(page);
     pointer('pointermove', 40, 40);
     await sleep(80);
     pointer('pointermove', 400, 400);
     await sleep(80);
-    assert.equal(w.document.querySelectorAll('.mi-fx').length, 0, 'no second trail on top of the glitter');
-    dom.window.close();
-  }
-  {
-    const { dom, w, pointer } = harness('StrategicUX_index.html');
-    pointer('pointermove', 40, 40);
-    await sleep(80);
-    pointer('pointermove', 400, 400);
-    await sleep(80);
-    assert.ok(w.document.querySelectorAll('.mi-fx--steam').length >= 1, 'delivery trail rises as steam');
-    dom.window.close();
-  }
-  {
-    const { dom, w, pointer } = harness('MedicalAdher_index.html');
-    pointer('pointermove', 40, 40);
-    await sleep(80);
-    pointer('pointermove', 400, 400);
-    await sleep(80);
-    assert.ok(w.document.querySelectorAll('.mi-fx--dose').length >= 1, 'medical trail tumbles dose capsules');
+    const glitter = w.document.querySelectorAll('.mi-glitter .gp');
+    assert.ok(glitter.length >= 1, `${page}: golden glitter follows the pointer`);
+    assert.ok(glitter[0].innerHTML.includes('<svg'), `${page}: glitter is Pragati's sparkle star`);
+    assert.equal(w.document.querySelectorAll('.mi-fx--steam, .mi-fx--dose').length, 0, `${page}: no second trail`);
     dom.window.close();
   }
 
@@ -153,19 +132,39 @@ async function main() {
     fx.dispatchEvent(new w.Event('animationend', { bubbles: true }));
     await sleep(20);
     assert.ok(!fx.isConnected, 'particle removed after its animation');
+
+    pointer('pointermove', 40, 40);
+    await sleep(80);
+    pointer('pointermove', 400, 400);
+    await sleep(20);
+    const gp = w.document.querySelector('.mi-glitter .gp');
+    assert.ok(gp, 'glitter spawned');
+    gp.dispatchEvent(new w.Event('animationend', { bubbles: true }));
+    await sleep(20);
+    assert.ok(!gp.isConnected, 'glitter piece removed after its animation');
     dom.window.close();
   }
 
-  /* ---- 7. opt-outs ----------------------------------------------------- */
+  /* ---- 7. the glitter is common code, not copied inline ---------------- */
+  {
+    const mbgHtml = fs.readFileSync(path.join(root, 'MBG_index.html'), 'utf8');
+    assert.ok(!mbgHtml.includes('id="glitter"'), 'Pragati no longer ships its own glitter layer');
+    assert.ok(!mbgHtml.includes('gfall'), 'the trail lives in the shared engine now');
+    assert.ok(script.includes('GLITTER_COL'), 'the shared engine owns the trail');
+  }
+
+  /* ---- 8. opt-outs ----------------------------------------------------- */
   {
     const { dom, w } = harness('MBG_index.html', { reduced: true });
     assert.equal(w.document.querySelector('.mi-layer'), null, 'reduced motion: no cursor');
+    assert.equal(w.document.querySelector('.mi-glitter'), null, 'reduced motion: no glitter');
     assert.ok(!w.document.documentElement.classList.contains('mi-cursor-on'), 'reduced motion: native cursor kept');
     dom.window.close();
   }
   {
     const { dom, w } = harness('MBG_index.html', { fine: false });
     assert.equal(w.document.querySelector('.mi-layer'), null, 'coarse pointer: no cursor');
+    assert.equal(w.document.querySelector('.mi-glitter'), null, 'coarse pointer: no glitter');
     dom.window.close();
   }
   {
@@ -174,21 +173,23 @@ async function main() {
     dom.window.close();
   }
 
-  /* ---- 8. a motion preference turned on later retires the flourish ------ */
+  /* ---- 9. a motion preference turned on later retires the flourish ------ */
   {
-    const { dom, w, media } = harness('MBG_index.html');
+    const { dom, w, media } = harness('StrategicUX_index.html');
     assert.ok(w.document.querySelector('.mi-layer'), 'cursor active before the change');
+    assert.ok(w.document.querySelector('.mi-glitter'), 'glitter active before the change');
     const change = media.find((m) => m.type === 'change');
     assert.ok(change, 'listens for motion changes');
     change.callback({ matches: true });
     assert.equal(w.document.querySelector('.mi-layer'), null, 'cursor removed when motion is reduced');
+    assert.equal(w.document.querySelector('.mi-glitter'), null, 'glitter removed with it');
     assert.ok(!w.document.documentElement.classList.contains('mi-cursor-on'), 'native cursor restored');
     dom.window.close();
   }
 }
 
 main().then(() => {
-  console.log('Micro-interaction tests passed (wiring, three themes, hover/press, bursts, trails, cleanup, opt-outs, live reduced-motion).');
+  console.log('Micro-interaction tests passed (wiring, one shared personality on all three pages, hover/press, coin bursts, glitter trail, cleanup, opt-outs, live reduced-motion).');
 }, (error) => {
   console.error(error);
   process.exit(1);
