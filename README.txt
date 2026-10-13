@@ -8,6 +8,7 @@
 - `slides/` — standalone vector slide fragments, loaded as the reader approaches them
 - `assets/` and `images/` — optimized WebP artwork and the precompiled Tailwind stylesheet
 - `scripts/lazy-slides.js` — shared progressive artwork loader
+- `scripts/project-transition.js` and `assets/project-transition.css` — shared project-opening curtain
 - `resume/Harsha_Dhore.pdf` — temporary explanatory PDF, not a real resume
 
 ## Performance work
@@ -24,7 +25,11 @@ The jsdom test dependency is only needed for local verification; it is not part 
 npm install --prefix /tmp jsdom
 node tools/lazy-slides/test.js
 node tools/slide-rail/test.js
+node tools/project-transition/test.js
 ```
+
+## Project opening transition
+All three case studies share a warm, full-screen title curtain. Normal project clicks raise it before navigation; the destination briefly shows its title and slides the curtain upward to reveal the screen. It also runs on direct case-study visits. Reduced-motion preferences skip the animation, modified/new-tab clicks retain native behavior, and back/forward restores clear the curtain. No dependencies or build step are required.
 
 ## Hosting
 GitHub Pages is recommended for this static site. Keep the folder structure unchanged when deploying: the slide loader uses same-origin `fetch()`, so the pages need to be served over HTTP/HTTPS rather than opened directly with `file://`.
