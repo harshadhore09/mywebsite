@@ -1,0 +1,81 @@
+/* Shared case-study opening curtain; ordinary links still work without JS. */
+.project-transition {
+  --transition-accent: #c17a5f;
+  position: fixed;
+  inset: 0;
+  z-index: 100000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px;
+  box-sizing: border-box;
+  background: #f8f5ef;
+  color: #2b2228;
+  overflow: hidden;
+  isolation: isolate;
+  transform: translateY(100%);
+  visibility: hidden;
+  transition: transform 420ms cubic-bezier(.76, 0, .24, 1), visibility 420ms;
+}
+.project-transition::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  opacity: .45;
+  background-image: linear-gradient(#e8e4d9 1px, transparent 1px), linear-gradient(90deg, #e8e4d9 1px, transparent 1px);
+  background-size: 64px 64px;
+  mask-image: radial-gradient(ellipse at center, #000, transparent 75%);
+}
+.project-transition.is-visible { transform: translateY(0); visibility: visible; }
+.project-transition.is-entering { transition: none; }
+.project-transition.is-revealing {
+  transform: translateY(-100%);
+  visibility: visible;
+  transition: transform 650ms cubic-bezier(.76, 0, .24, 1);
+}
+.project-transition__content { width: min(100%, 740px); text-align: center; }
+.project-transition__eyebrow {
+  margin: 0 0 22px;
+  color: var(--transition-accent);
+  font: 600 11px/1.5 'Inter', system-ui, sans-serif;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+}
+.project-transition__title {
+  margin: 0;
+  font: 400 clamp(32px, 6vw, 72px)/1.1 Georgia, serif;
+  letter-spacing: -.035em;
+  text-wrap: balance;
+}
+.project-transition__subtitle {
+  margin: 20px 0 0;
+  color: #665c5c;
+  font: 400 14px/1.6 'Inter', system-ui, sans-serif;
+}
+.project-transition__line {
+  width: 120px;
+  height: 2px;
+  margin: 32px auto 0;
+  background: #e8e4d9;
+  overflow: hidden;
+}
+.project-transition__line::after {
+  content: '';
+  display: block;
+  height: 100%;
+  background: var(--transition-accent);
+  transform-origin: left;
+  animation: project-transition-line 950ms cubic-bezier(.22, 1, .36, 1) both;
+}
+@keyframes project-transition-line { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+html.project-transition-active { overflow: hidden !important; }
+@media (prefers-reduced-motion: reduce) {
+  .project-transition { display: none; transition: none; }
+  .project-transition__line::after { animation: none; }
+  html.project-transition-active { overflow: initial !important; }
+}
+@media print {
+  .project-transition { display: none !important; }
+  html.project-transition-active { overflow: visible !important; }
+}
