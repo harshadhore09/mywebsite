@@ -32,16 +32,14 @@ node tools/micro-interactions/test.js
 ## Project opening transition
 All three case studies share a warm, full-screen title curtain. Normal project clicks raise it before navigation; the destination briefly shows its title and slides the curtain upward to reveal the screen. It also runs on direct case-study visits. Reduced-motion preferences skip the animation, modified/new-tab clicks retain native behavior, and back/forward restores clear the curtain. No dependencies or build step are required.
 
-## Themed micro-interactions and custom cursors
-Each case study gets its own cursor personality, built from one shared pair of files: `scripts/micro-interactions.js` and `assets/micro-interactions.css`. A page opts in with `<html data-project="mbg|food|medical">`; everything decorative is `aria-hidden`, `pointer-events:none`, and hidden in print.
+## Micro-interactions and custom cursors
+One common package — copied from Pragati / Mahila Bachat Gat and kept identical across all three case studies — lives in a single shared pair of files: `scripts/micro-interactions.js` and `assets/micro-interactions.css`. A page opts in with `<html data-project="mbg|food|medical">`; everything decorative is `aria-hidden`, `pointer-events:none`, and hidden in print.
 
-- **Pragati — Mahila Bachat Gat** (savings collective): the follower is a coin-stamp that shows a ₹ glyph over links, clicks drop small change (coins and a sparkle), and a little gold coin rides the scroll-progress bar. The page's existing golden glitter is left as the trail, so the two never double up.
-- **Food Delivery: Waiting Anxiety**: the cursor carries a hot takeout box, leaves rising steam wisps, and clicks answer with a tracking ping; the progress bar becomes a live order tracker with a pulsing rider at its head.
-- **Medical Adherence** (design probe): the follower is a two-tone capsule that tilts as it rolls and leaves tumbling dose crumbs, clicks answer with a double-beat heartbeat, and the header edge breathes like a monitor trace.
+On every case study the cursor is the same coin-stamp: a ₹ glyph shows over links, and clicks drop small change (coins and a sparkle). The golden glitter trail that used to live inline on the Pragati page is now part of the shared engine, so Food Delivery and Medical Adherence carry the exact same sparkle star, palette, and fall. Wherever a page has a reading-progress bar (Pragati's `#prog`, Food Delivery's `.progress-bar`), a little gold coin rides its head; Medical Adherence has no progress bar of its own, so it simply gets the rest of the package.
 
-All three also share small chrome-level touches: a light sweeps across the contact button on hover, nav pills and the back-to-top button lift on hover and settle on press, and text selection is tinted per project.
+All three also share the same chrome-level touches: a light sweeps across the contact button on hover, nav pills and the back-to-top button lift on hover and settle on press, and text selection is tinted gold.
 
-The engine only runs for a fine pointer with motion allowed: touch readers, reduced-motion readers, and anyone whose browser never loads the file keep the native cursor, and switching the OS to reduced motion mid-visit retires the cursor immediately. The click bursts and trails are capped and self-cleaning.
+The engine only runs for a fine pointer with motion allowed: touch readers, reduced-motion readers, and anyone whose browser never loads the file keep the native cursor, and switching the OS to reduced motion mid-visit retires the cursor immediately. The click bursts and glitter are capped and self-cleaning.
 
 ## Hosting
 GitHub Pages is recommended for this static site. Keep the folder structure unchanged when deploying: the slide loader uses same-origin `fetch()`, so the pages need to be served over HTTP/HTTPS rather than opened directly with `file://`.

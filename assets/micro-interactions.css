@@ -1,37 +1,22 @@
 /* =====================================================================
-   Themed micro-interactions + custom cursors for the three case studies.
-   Each page opts in with <html data-project="mbg|food|medical"> and the
-   script (scripts/micro-interactions.js) adds .mi-cursor-on only for a
-   fine pointer with motion allowed — touch readers and reduced-motion
+   Micro-interactions + custom cursors for the three case studies.
+   One common package, copied from Pragati (Mahila Bachat Gat) and kept
+   the same on every page. Each case study opts in with
+   <html data-project="mbg|food|medical"> and the script
+   (scripts/micro-interactions.js) adds .mi-cursor-on only for a fine
+   pointer with motion allowed — touch readers and reduced-motion
    readers keep the native cursor and none of this runs.
    ===================================================================== */
 
-/* ---- per-project tokens --------------------------------------------- */
-html[data-project="mbg"] {
+/* ---- shared tokens (Pragati's warm gold, on every case study) ------- */
+html[data-project] {
   --mi-accent: #ff4d17;
   --mi-accent-2: #ffb02e;
   --mi-wash: rgba(255, 77, 23, .13);
   --mi-halo: rgba(255, 77, 23, .12);
   --mi-glyph-ink: #ff4d17;
 }
-html[data-project="food"] {
-  --mi-accent: #2b7a66;
-  --mi-accent-2: #e8930c;
-  --mi-wash: rgba(43, 122, 102, .13);
-  --mi-halo: rgba(43, 122, 102, .12);
-  --mi-glyph-ink: #1d5749;
-}
-html[data-project="medical"] {
-  --mi-accent: #4c9f38;
-  --mi-accent-2: #c8ff3c;
-  --mi-wash: rgba(76, 159, 56, .12);
-  --mi-halo: rgba(200, 255, 60, .3);
-  --mi-glyph-ink: #1b3914;
-}
-
-html[data-project="mbg"] ::selection { background: #ffd966; color: #0d0d0f; }
-html[data-project="food"] ::selection { background: #bfe3d6; color: #171714; }
-html[data-project="medical"] ::selection { background: #c8ff3c; color: #1b3914; }
+html[data-project] ::selection { background: #ffd966; color: #0d0d0f; }
 
 /* ---- shared chrome: lift on hover, settle on press ------------------- */
 html[data-project] .toc a,
@@ -68,7 +53,7 @@ html[data-project] a.pnav-cta::before {
 html[data-project] a.pnav-cta:hover::before,
 html[data-project] a.pnav-cta:focus-visible::before { transform: translateX(135%); }
 
-/* ---- back-to-top: a soft themed halo on hover ------------------------ */
+/* ---- back-to-top: a soft gold halo on hover -------------------------- */
 html[data-project] .back-top::after {
   content: '';
   position: absolute;
@@ -84,8 +69,10 @@ html[data-project] .back-top:hover::after { animation: mi-halo .9s ease-out infi
   100% { opacity: 0; transform: scale(1.35); }
 }
 
-/* ---- MBG: a little gold coin rides the reading-progress bar ---------- */
-html[data-project="mbg"] #prog::after {
+/* ---- a little gold coin rides the reading-progress bar --------------- */
+html[data-project] .progress-bar { position: relative; }
+html[data-project] #prog::after,
+html[data-project] .progress-bar::after {
   content: '';
   position: absolute;
   top: 50%;
@@ -103,46 +90,10 @@ html[data-project="mbg"] #prog::after {
   50% { transform: scale(1.22); }
 }
 
-/* ---- Food Delivery: the progress bar becomes a live order tracker ---- */
-html[data-project="food"] .progress-bar { position: relative; }
-html[data-project="food"] .progress-bar::after {
-  content: '';
-  position: absolute;
-  top: 50%;
-  right: -4px;
-  width: 9px;
-  height: 9px;
-  border-radius: 50%;
-  background: var(--accent);
-  box-shadow: 0 0 0 3px rgba(43, 122, 102, .18);
-  animation: mi-rider 1.6s cubic-bezier(.4, 0, .6, 1) infinite;
-}
-@keyframes mi-rider {
-  0%, 100% { transform: translateY(-50%) scale(1); box-shadow: 0 0 0 3px rgba(43, 122, 102, .18); }
-  50% { transform: translateY(-50%) scale(1.28); box-shadow: 0 0 0 7px rgba(43, 122, 102, .08); }
-}
-
-/* ---- Medical Adherence: the header edge breathes like a monitor trace - */
-html[data-project="medical"] .pnav::after {
-  content: '';
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: -1px;
-  height: 2px;
-  pointer-events: none;
-  background: linear-gradient(90deg, transparent, var(--mi-accent-2) 55%, transparent);
-  animation: mi-ecg 3.8s ease-in-out infinite;
-}
-@keyframes mi-ecg {
-  0%, 100% { opacity: .2; transform: scaleX(.55); }
-  50% { opacity: .95; transform: scaleX(1); }
-}
-
 /* =====================================================================
    Custom cursor — created by the script, never by markup.
    .mi-dot tracks the pointer exactly; .mi-ring lags behind and carries
-   the themed glyph on hover. JS owns the per-frame transform so the
+   the ₹ glyph on hover. JS owns the per-frame transform so the
    state changes (hover / press) can share the same composited write.
    ===================================================================== */
 .mi-layer { position: fixed; inset: 0; z-index: 10000; pointer-events: none; overflow: hidden; }
@@ -185,22 +136,7 @@ html.mi-cursor-on, html.mi-cursor-on * { cursor: none !important; }
 .mi-glyph svg { width: 17px; height: 17px; display: block; }
 .mi-glyph-tx { font: 800 15px/1 'Inter', system-ui, sans-serif; }
 
-/* Medical: the follower itself is a two-tone capsule that tilts as it rolls */
-html[data-project="medical"] .mi-ring {
-  width: 44px;
-  height: 24px;
-  margin: -12px 0 0 -22px;
-  border-radius: 999px;
-  border: 1.5px solid var(--mi-accent);
-  background: linear-gradient(90deg, var(--mi-accent-2) 50%, var(--mi-accent) 50%);
-  opacity: .95;
-}
-html[data-project="medical"] .mi-layer.is-hover .mi-ring {
-  background: linear-gradient(90deg, var(--mi-accent-2) 50%, var(--mi-accent) 50%);
-  box-shadow: 0 0 0 7px var(--mi-halo);
-}
-
-/* ---- themed particles (click bursts and pointer trails) -------------- */
+/* ---- click particles (coins and a sparkle) --------------------------- */
 .mi-fx {
   position: absolute;
   top: 0;
@@ -211,7 +147,7 @@ html[data-project="medical"] .mi-layer.is-hover .mi-ring {
   animation-fill-mode: forwards;
 }
 
-/* MBG — coins and sparkles, echoing the page's golden glitter */
+/* coins and sparkles, echoing the page's golden glitter */
 .mi-fx--coin {
   width: 9px;
   height: 9px;
@@ -240,75 +176,21 @@ html[data-project="medical"] .mi-layer.is-hover .mi-ring {
   100% { opacity: 0; transform: translate(calc(-50% + var(--dx, 0px)), calc(-50% + var(--dy, -30px))) scale(0) rotate(160deg); }
 }
 
-/* Food Delivery — a tracking "ping", like a courier appearing on the map */
-.mi-fx--ping {
-  width: 22px;
-  height: 22px;
-  border-radius: 50%;
-  border: 2px solid var(--mi-accent);
-  animation-name: mi-ping-out;
-  animation-timing-function: cubic-bezier(.2, .7, .3, 1);
-}
-@keyframes mi-ping-out {
-  0% { opacity: .9; transform: translate(-50%, -50%) scale(.35); }
-  100% { opacity: 0; transform: translate(-50%, -50%) scale(2.6); }
-}
-
-/* Food Delivery — steam wisps trailing the pointer */
-.mi-fx--steam {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background: rgba(43, 122, 102, .16);
-  filter: blur(2px);
-  animation-name: mi-steam-rise;
-  animation-timing-function: ease-out;
-}
-@keyframes mi-steam-rise {
-  0% { opacity: 0; transform: translate(-50%, -50%) scale(.5); }
-  25% { opacity: .9; }
-  100% { opacity: 0; transform: translate(calc(-50% + var(--dx, 8px)), calc(-50% - 34px)) scale(1.9); }
-}
-
-/* Medical Adherence — a double-beat pulse on click */
-.mi-fx--beat {
-  width: 18px;
-  height: 18px;
-  border-radius: 50%;
-  border: 1.5px solid var(--mi-accent);
-  animation-name: mi-beat-out;
-  animation-timing-function: ease-out;
-}
-@keyframes mi-beat-out {
-  0% { opacity: 0; transform: translate(-50%, -50%) scale(.4); }
-  18% { opacity: 1; transform: translate(-50%, -50%) scale(1.05); }
-  30% { opacity: .9; transform: translate(-50%, -50%) scale(.9); }
-  55% { opacity: .55; transform: translate(-50%, -50%) scale(1.7); }
-  100% { opacity: 0; transform: translate(-50%, -50%) scale(2.3); }
-}
-
-/* Medical Adherence — dose-sized capsules tumbling in the wake */
-.mi-fx--dose {
-  width: 5px;
-  height: 11px;
-  border-radius: 999px;
-  background: linear-gradient(90deg, var(--mi-accent-2) 50%, var(--mi-accent) 50%);
-  animation-name: mi-dose-fall;
-  animation-timing-function: cubic-bezier(.3, .5, .4, 1);
-}
-@keyframes mi-dose-fall {
-  0% { opacity: 0; transform: translate(-50%, -50%) rotate(var(--r, 0deg)) scale(.6); }
-  20% { opacity: 1; }
-  100% { opacity: 0; transform: translate(calc(-50% + var(--dx, 0px)), calc(-50% + var(--dy, 26px))) rotate(calc(var(--r, 0deg) + 220deg)) scale(1); }
+/* ---- the golden glitter trail (copied from the Pragati page) --------- */
+.mi-glitter { position: fixed; inset: 0; z-index: 9999; pointer-events: none; }
+.gp { position: absolute; animation: gfall var(--life, 1100ms) cubic-bezier(.25, .6, .4, 1) forwards; }
+@keyframes gfall {
+  0% { opacity: 0; transform: translate(-50%, -50%) scale(.2); }
+  18% { opacity: 1; transform: translate(calc(-50% + var(--dx, 0px) * .22), calc(-50% + var(--dy, 0px) * .18)) scale(1); }
+  100% { opacity: 0; transform: translate(calc(-50% + var(--dx, 0px)), calc(-50% + var(--dy, 0px) + var(--grav, 42px))) scale(.32); }
 }
 
 /* ---- respect the reader --------------------------------------------- */
 @media (prefers-reduced-motion: reduce) {
-  .mi-layer, .mi-fx { display: none !important; }
+  .mi-layer, .mi-glitter, .mi-fx { display: none !important; }
   html[data-project] a.pnav-cta::before { display: none; }
-  html[data-project="mbg"] #prog::after,
-  html[data-project="food"] .progress-bar::after,
-  html[data-project="medical"] .pnav::after,
+  html[data-project] #prog::after,
+  html[data-project] .progress-bar::after,
   html[data-project] .back-top::after { display: none; }
   html[data-project] .toc a:hover, html[data-project] .sld-rail a:hover, html[data-project] .pnav-proj:hover,
   html[data-project] .pnav-back:hover, html[data-project] .back-top:hover,
@@ -316,7 +198,7 @@ html[data-project="medical"] .mi-layer.is-hover .mi-ring {
   html[data-project] .back-top:active, html[data-project] a.pnav-cta:active { transform: none; }
 }
 @media print {
-  .mi-layer { display: none !important; }
-  html[data-project="mbg"] #prog::after,
-  html[data-project="food"] .progress-bar::after { display: none; }
+  .mi-layer, .mi-glitter { display: none !important; }
+  html[data-project] #prog::after,
+  html[data-project] .progress-bar::after { display: none; }
 }
