@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-project="mbg">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -81,9 +81,7 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--paper);color:var(
 .toc a{white-space:nowrap;padding:7px 13px;border-radius:100px;border:1px solid var(--line);background:#fff;font-size:12px;font-weight:600;color:var(--muted);text-decoration:none;display:inline-flex;gap:6px;align-items:center}.toc a b{font-weight:800;color:var(--ink)}
 .toc a.active{background:var(--ink);color:#fff;border-color:var(--ink)}
 .toc a.active b{color:#fff}
-#glitter{position:fixed;inset:0;z-index:9999;pointer-events:none}
-.gp{position:absolute;animation:gfall var(--life,1100ms) cubic-bezier(.25,.6,.4,1) forwards}
-@keyframes gfall{0%{opacity:0;transform:translate(-50%,-50%) scale(.2)}18%{opacity:1;transform:translate(calc(-50% + var(--dx,0px)*.22),calc(-50% + var(--dy,0px)*.18)) scale(1)}100%{opacity:0;transform:translate(calc(-50% + var(--dx,0px)),calc(-50% + var(--dy,0px) + var(--grav,42px))) scale(.32)}}
+
 footer{padding:28px 0;text-align:center;font-size:13px;color:var(--muted);border-top:1px solid var(--line);background:#faf9f6;line-height:1.6}
 .back-top{position:fixed;bottom:20px;right:20px;background:var(--ink);color:#fff;border:none;width:44px;height:44px;border-radius:50%;display:grid;place-items:center;cursor:pointer;opacity:0;pointer-events:none;transition:.3s;z-index:80}
 .back-top.show{opacity:1;pointer-events:auto}
@@ -98,10 +96,13 @@ footer{padding:28px 0;text-align:center;font-size:13px;color:var(--muted);border
 @media print{.toc{display:none}}
 </style>
   <script src="scripts/lazy-slides.js" defer></script>
+  <script src="./scripts/micro-interactions.js" defer></script>
+  <link rel="stylesheet" href="./assets/project-transition.css">
+  <link rel="stylesheet" href="./assets/micro-interactions.css">
 </head>
 <body>
+<script src="./scripts/project-transition.js"></script>
 <div id="prog"></div>
-<div id="glitter"></div>
 <nav class="pnav" data-pnav aria-label="Project navigation"><div class="pnav-in"><div class="pnav-left"><a class="pnav-back" href="index.html" aria-label="Back to portfolio home"><span class="pnav-back-ic"><svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M13 8H3m0 0 4.5-4.5M3 8l4.5 4.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="pnav-back-tx">Back</span></a><span class="pnav-sep" aria-hidden="true"></span><a class="pnav-title" href="#s1" aria-label="Pragati — back to the cover"><span class="pnav-kicker">Case Study 01<span class="pnav-kick-x"> · Behavioural Design</span></span><span class="pnav-name">Pragati <em>— Mahila Bachat Gat</em></span></a></div><div class="pnav-links" id="pnavLinks"><a href="index.html#work">Work</a><a href="index.html#about">About</a><div class="pnav-dd pnav-dd--projects"><button class="pnav-dd-btn" type="button" aria-expanded="false" aria-controls="pnavProjects">Projects <svg viewBox="0 0 10 10" fill="none" aria-hidden="true"><path d="m2 3.5 3 3 3-3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button><div class="pnav-dd-menu" id="pnavProjects"><p class="pnav-dd-label">Case studies</p><a class="pnav-proj" href="MBG_index.html" aria-current="page"><span class="pnav-proj-n">01</span><span class="pnav-proj-t">Pragati — Mahila Bachat Gat<small>Behavioural Design</small></span><span class="pnav-here">Viewing</span></a><a class="pnav-proj" href="StrategicUX_index.html"><span class="pnav-proj-n">02</span><span class="pnav-proj-t">Food Delivery: Waiting Anxiety<small>Strategic UX</small></span></a><a class="pnav-proj" href="MedicalAdher_index.html"><span class="pnav-proj-n">03</span><span class="pnav-proj-t">Medical Adherence<small>Design Probe</small></span></a></div></div><a href="index.html#contact" class="pnav-cta">Get in touch</a></div><button class="pnav-burger" type="button" aria-expanded="false" aria-controls="pnavLinks" aria-label="Open menu"><span></span><span></span><span></span></button></div></nav>
 <div class="toc"><div class="wrap">
 <a href="#s1"><b>01</b> Cover</a><a href="#s2"><b>02</b> Overview</a><a href="#s3"><b>03</b> Problem</a><a href="#s4"><b>04</b> Who Are These Women</a><a href="#s5"><b>05</b> Categorization</a><a href="#s6"><b>06</b> Persona President</a><a href="#s7"><b>07</b> Persona Member</a><a href="#s8"><b>08</b> Journey Map</a><a href="#s9"><b>09</b> Pain Points</a><a href="#s10"><b>10</b> Tasks</a><a href="#s11"><b>11</b> Why Not Digital</a><a href="#s12"><b>12</b> CCF Insights</a><a href="#s13"><b>13</b> COM-B</a><a href="#s14"><b>14</b> Behaviour</a><a href="#s15"><b>15</b> HMW</a><a href="#s16"><b>16</b> Ideation</a><a href="#s17"><b>17</b> Concept</a><a href="#s18"><b>18</b> Prototype</a><a href="#s19"><b>19</b> Test 1</a><a href="#s20"><b>20</b> Test 2</a><a href="#s21"><b>21</b> Final UI</a><a href="#s22"><b>22</b> Impact</a><a href="#s23"><b>23</b> Learnings</a><a href="#s24"><b>24</b> Thank You</a>
@@ -215,7 +216,6 @@ const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.targ
 document.querySelectorAll('.rv').forEach(el=>io.observe(el));
 /* active-slide tracking now lives in the shared slide rail script below */
 document.getElementById('backTop').addEventListener('click',()=>scrollTo({top:0,behavior:'smooth'}));
-(function(){if(matchMedia('(prefers-reduced-motion: reduce)').matches) return;if(matchMedia('(hover: none)').matches) return;const layer=document.getElementById('glitter');const COL=['#ff4d17','#ffb02e','#ffd966','#f2879a','#fff4d6','#e8447a'];const R=(a,b)=>a+Math.random()*(b-a);function shape(c,s){return `<svg width="${s}" height="${s}" viewBox="0 0 24 24"><path d="M12 0c.7 6.4 4.9 10.6 12 12-7.1 1.4-11.3 5.6-12 12-.7-6.4-4.9-10.6-12-12C7.1 10.6 11.3 6.4 12 0z" fill="${c}"/></svg>`}let last=0,lx=0,ly=0,alive=0;const MAX=80;function spawn(x,y){if(alive>MAX) return;const p=document.createElement('div');p.className='gp';const c=COL[(Math.random()*COL.length)|0];const sz=R(7,14);p.innerHTML=shape(c,sz);p.style.left=(x+R(-6,6))+'px';p.style.top=(y+R(-6,6))+'px';p.style.setProperty('--dx',R(-40,40)+'px');p.style.setProperty('--dy',R(-35,10)+'px');p.style.setProperty('--grav',R(30,65)+'px');p.style.setProperty('--life',R(800,1400)+'ms');layer.appendChild(p);alive++;setTimeout(()=>{p.remove();alive--},1400);}addEventListener('pointermove',e=>{if(e.pointerType!=='mouse')return;const d=Math.hypot(e.clientX-lx,e.clientY-ly);const now=performance.now();if(d>16&&now-last>28){spawn(e.clientX,e.clientY);last=now;lx=e.clientX;ly=e.clientY}},{passive:true});})();
 </script>
 <script>
 /* Project header navigation: back link, projects menu, mobile menu (independent of the page's own scripts) */

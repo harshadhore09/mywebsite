@@ -8,6 +8,7 @@
 - `slides/` — standalone vector slide fragments, loaded as the reader approaches them
 - `assets/` and `images/` — optimized WebP artwork and the precompiled Tailwind stylesheet
 - `scripts/lazy-slides.js` — shared progressive artwork loader
+- `scripts/project-transition.js` and `assets/project-transition.css` — shared project-opening curtain
 - `resume/Harsha_Dhore.pdf` — temporary explanatory PDF, not a real resume
 
 ## Performance work
@@ -24,7 +25,21 @@ The jsdom test dependency is only needed for local verification; it is not part 
 npm install --prefix /tmp jsdom
 node tools/lazy-slides/test.js
 node tools/slide-rail/test.js
+node tools/project-transition/test.js
+node tools/micro-interactions/test.js
 ```
+
+## Project opening transition
+All three case studies share a warm, full-screen title curtain. Normal project clicks raise it before navigation; the destination briefly shows its title and slides the curtain upward to reveal the screen. It also runs on direct case-study visits. Reduced-motion preferences skip the animation, modified/new-tab clicks retain native behavior, and back/forward restores clear the curtain. No dependencies or build step are required.
+
+## Micro-interactions and custom cursors
+One common package — copied from Pragati / Mahila Bachat Gat and kept identical across all three case studies — lives in a single shared pair of files: `scripts/micro-interactions.js` and `assets/micro-interactions.css`. A page opts in with `<html data-project="mbg|food|medical">`; everything decorative is `aria-hidden`, `pointer-events:none`, and hidden in print.
+
+On every case study the cursor is the same coin-stamp: a ₹ glyph shows over links, and clicks drop small change (coins and a sparkle). The golden glitter trail that used to live inline on the Pragati page is now part of the shared engine, so Food Delivery and Medical Adherence carry the exact same sparkle star, palette, and fall. Wherever a page has a reading-progress bar (Pragati's `#prog`, Food Delivery's `.progress-bar`), a little gold coin rides its head; Medical Adherence has no progress bar of its own, so it simply gets the rest of the package.
+
+All three also share the same chrome-level touches: a light sweeps across the contact button on hover, nav pills and the back-to-top button lift on hover and settle on press, and text selection is tinted gold.
+
+The engine only runs for a fine pointer with motion allowed: touch readers, reduced-motion readers, and anyone whose browser never loads the file keep the native cursor, and switching the OS to reduced motion mid-visit retires the cursor immediately. The click bursts and glitter are capped and self-cleaning.
 
 ## Hosting
 GitHub Pages is recommended for this static site. Keep the folder structure unchanged when deploying: the slide loader uses same-origin `fetch()`, so the pages need to be served over HTTP/HTTPS rather than opened directly with `file://`.
