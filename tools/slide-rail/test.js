@@ -91,15 +91,14 @@ for (const file of Object.keys(PAGES)) {
   if (file === 'StrategicUX_index.html') {
     section('  food-delivery labels match the testing and high-fidelity artwork');
     const sections = [
-      [13, 'UX Guidelines', '13.html', 'six principles'],
-      [14, 'ROI Calculation', '14.html', 'ROI calculation'],
-      [15, 'Ideation', '15.html', 'Ideation sketches'],
-      [24, 'Prototype testing insights: Participant 1', '24.html', 'participant one'],
-      [25, 'Testing: Participant 2', '25.html', 'participant two'],
-      [26, 'Testing: Participant 3', '26.html', 'participant three'],
-      [27, 'Testing: Participant 4', '27.html', 'participant four'],
-      [28, 'Hi-Fidelity: On-time order', '28.html', 'when order is on time'],
-      [31, 'Hi-Fidelity: Delayed order', '31.html', 'when order gets delayed'],
+      [13, 'ROI Calculation', '13.html', 'ROI calculation'],
+      [14, 'Ideation', '14.html', 'Ideation sketches'],
+      [23, 'Prototype testing insights: Participant 1', '23.html', 'participant one'],
+      [24, 'Testing: Participant 2', '24.html', 'participant two'],
+      [25, 'Testing: Participant 3', '25.html', 'participant three'],
+      [26, 'Testing: Participant 4', '26.html', 'participant four'],
+      [27, 'Hi-Fidelity: On-time order', '27.html', 'when order is on time'],
+      [30, 'Hi-Fidelity: Delayed order', '30.html', 'when order gets delayed'],
     ];
     for (const [number, title, source, description] of sections) {
       const i = number - 1;
@@ -117,8 +116,8 @@ for (const file of Object.keys(PAGES)) {
     }
     h.scrollTo(h.window.__test.offsets[12] - cfg.headerH - cfg.railH);
     ok(h.pills[12].getAttribute('aria-current') === 'true', 'the shared rail marks slide 13 as current');
-    ok(h.pills[13].getAttribute('aria-label') === 'Go to slide 14: ROI Calculation',
-       'the ROI slide sits directly before Ideation and is individually labelled');
+    ok(h.pills[12].getAttribute('aria-label') === 'Go to slide 13: ROI Calculation',
+       'the ROI slide follows the high-impact tasks slide and precedes Ideation');
     ok(h.doc.querySelectorAll('.pnav-dd-menu .pnav-proj').length === 3, 'project menu keeps all three case-study links');
   }
 
