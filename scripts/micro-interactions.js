@@ -13,11 +13,10 @@
    ===================================================================== */
 
 /* ---- the one personality (Pragati / Mahila Bachat Gat's) ------------
-   The cursor is a coin-stamp: a ₹ glyph shows over links, clicks drop
-   small change (coins and a sparkle), and the golden glitter trail that
-   used to live inline on the Pragati page is ported here so all three
-   case studies carry the identical trail. */
-const GLYPH = '<span class="mi-glyph-tx">&#8377;</span>';
+   The cursor is a simple ring and dot; hovering links softens the ring,
+   clicks drop small change (coins and a sparkle), and the golden glitter
+   trail that used to live inline on the Pragati page is shared by all
+   three case studies. */
 
 /* The glitter palette and motion are Pragati's, copied verbatim so the
    trail looks and falls exactly the same on every case study. */
@@ -59,10 +58,6 @@ const PROJECTS = {
   layer.setAttribute('aria-hidden', 'true');
   const ring = document.createElement('div');
   ring.className = 'mi-ring';
-  const glyph = document.createElement('div');
-  glyph.className = 'mi-glyph';
-  glyph.innerHTML = GLYPH;
-  ring.appendChild(glyph);
   const dot = document.createElement('div');
   dot.className = 'mi-dot';
   layer.append(dot, ring);

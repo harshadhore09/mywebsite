@@ -60,7 +60,7 @@ async function main() {
     assert.ok(layer, `${page}: cursor layer`);
     assert.ok(layer.querySelector('.mi-ring'), `${page}: ring`);
     assert.ok(layer.querySelector('.mi-dot'), `${page}: dot`);
-    assert.ok(layer.querySelector('.mi-glyph'), `${page}: glyph`);
+    assert.equal(layer.querySelector('.mi-glyph'), null, `${page}: cursor has no rupee glyph`);
     assert.ok(w.document.querySelector('.mi-glitter'), `${page}: glitter layer`);
     assert.ok(w.document.documentElement.classList.contains('mi-cursor-on'), `${page}: native cursor retired`);
     assert.equal(layer.getAttribute('aria-hidden'), 'true', `${page}: decorative`);
@@ -101,9 +101,8 @@ async function main() {
     const sparkles = layer.querySelectorAll('.mi-fx--sparkle').length;
     assert.equal(coins, 5, `${page}: drops small change`);
     assert.equal(sparkles, 1, `${page}: one bright sparkle`);
-    const glyphTx = layer.querySelector('.mi-glyph-tx');
-    assert.equal(glyphTx && glyphTx.textContent, '\u20B9', `${page}: rupee glyph, same as Pragati`);
-    signatures.push(`${coins}/${sparkles}/${glyphTx.textContent}`);
+    assert.equal(layer.querySelector('.mi-glyph-tx'), null, `${page}: no rupee glyph on click`);
+    signatures.push(`${coins}/${sparkles}`);
     dom.window.close();
   }
   assert.equal(new Set(signatures).size, 1, 'every project shares the identical click burst');
