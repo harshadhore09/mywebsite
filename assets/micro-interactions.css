@@ -14,7 +14,6 @@ html[data-project] {
   --mi-accent-2: #ffb02e;
   --mi-wash: rgba(255, 77, 23, .13);
   --mi-halo: rgba(255, 77, 23, .12);
-  --mi-glyph-ink: #ff4d17;
 }
 html[data-project] ::selection { background: #ffd966; color: #0d0d0f; }
 
@@ -92,9 +91,9 @@ html[data-project] .progress-bar::after {
 
 /* =====================================================================
    Custom cursor — created by the script, never by markup.
-   .mi-dot tracks the pointer exactly; .mi-ring lags behind and carries
-   the ₹ glyph on hover. JS owns the per-frame transform so the
-   state changes (hover / press) can share the same composited write.
+   .mi-dot tracks the pointer exactly; .mi-ring lags behind and softens
+   on hover. JS owns the per-frame transform so state changes (hover /
+   press) can share the same composited write.
    ===================================================================== */
 .mi-layer { position: fixed; inset: 0; z-index: 10000; pointer-events: none; overflow: hidden; }
 html.mi-cursor-on, html.mi-cursor-on * { cursor: none !important; }
@@ -121,20 +120,6 @@ html.mi-cursor-on, html.mi-cursor-on * { cursor: none !important; }
 .mi-layer.is-hover .mi-dot { opacity: 0; }
 .mi-layer.is-press .mi-ring { background: var(--mi-wash); }
 .mi-layer.is-out .mi-dot, .mi-layer.is-out .mi-ring { opacity: 0; }
-
-.mi-glyph {
-  position: absolute;
-  inset: 0;
-  display: grid;
-  place-items: center;
-  color: var(--mi-glyph-ink);
-  opacity: 0;
-  transform: scale(.5);
-  transition: opacity .22s ease, transform .22s cubic-bezier(.2, .7, .3, 1);
-}
-.mi-layer.is-hover .mi-glyph { opacity: 1; transform: scale(1); }
-.mi-glyph svg { width: 17px; height: 17px; display: block; }
-.mi-glyph-tx { font: 800 15px/1 'Inter', system-ui, sans-serif; }
 
 /* ---- click particles (coins and a sparkle) --------------------------- */
 .mi-fx {
