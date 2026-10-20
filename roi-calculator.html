@@ -1,0 +1,320 @@
+<!doctype html>
+<html lang="en" data-project="food">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="theme-color" content="#11110f"/>
+  <meta name="description" content="Interactive ROI calculator for Food Delivery Waiting Anxiety — estimate retention, frequency and support impact."/>
+  <title>ROI Calculator · Food Delivery Waiting Anxiety · Harsha Dhore</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+  <style>
+    :root{--ink:#171714;--muted:#77736c;--paper:#f4f0e9;--paper-strong:#fffdf9;--line:rgba(23,23,20,.12);--accent:#874FFF;--accent-dark:#1d5749;--orange:#B56C0A;--green:#2b7a66;--radius:18px;--max:1200px}
+    *{box-sizing:border-box} html{scroll-behavior:smooth}
+    body{margin:0;color:var(--ink);background:var(--paper);font-family:'Inter',system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased}
+    a{color:inherit}
+    /* reuse header */
+    .site-header{position:sticky;top:0;z-index:20;display:flex;align-items:center;justify-content:space-between;gap:16px;width:100%;min-height:72px;padding:14px clamp(18px,4vw,64px);font:500 14px/1 'Inter',sans-serif;color:#f8f6f1;background:rgba(17,17,15,.94);border-bottom:1px solid rgba(255,255,255,.08);backdrop-filter:blur(16px)}
+    .pnav-left{display:flex;align-items:center;gap:14px}
+    .pnav-back{flex:none;display:inline-flex;align-items:center;gap:8px;padding:5px 15px 5px 5px;color:#f8f6f1;text-decoration:none;font-size:13px;font-weight:700;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.2);border-radius:999px}
+    .pnav-back-ic{display:grid;place-items:center;width:28px;height:28px;border-radius:50%;color:#11110f;background:#cce8b8}
+    .pnav-back-ic svg{width:14px;height:14px}
+    .pnav-sep{width:1px;height:28px;background:rgba(255,255,255,.16)}
+    .brand{display:inline-flex;align-items:center;gap:10px;color:inherit;text-decoration:none}
+    .brand-mark{flex:none;display:grid;place-items:center;width:34px;height:34px;border-radius:50%;color:#11110f;background:#cce8b8;font-size:12px;font-weight:800}
+    .brand-tx{display:flex;flex-direction:column;gap:3px;line-height:1.15}
+    .brand-kicker{font-size:10px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#cce8b8;white-space:nowrap}
+    .brand-name{font-size:15px;font-weight:800;letter-spacing:-.01em;white-space:nowrap}
+    .pnav-right{display:flex;align-items:center;gap:10px}
+    .pnav-links{display:flex;align-items:center;gap:2px}
+    .pnav-links>a{padding:9px 12px;color:rgba(248,246,241,.72);text-decoration:none;font-size:14px;font-weight:600;border-radius:999px}
+    .pnav-links>a:hover{color:#f8f6f1;background:rgba(255,255,255,.08)}
+    .pnav-links>a.pnav-cta{margin-left:6px;padding:11px 18px;color:#11110f;background:#cce8b8;font-size:13px;font-weight:700}
+    @media(max-width:700px){.pnav-links{display:none}.brand-name{font-size:14px}}
+
+    .wrap{max-width:var(--max);margin:0 auto;padding:0 clamp(18px,4vw,40px)}
+    .intro{padding: clamp(28px,5vw,56px) 0 18px}
+    .eyebrow{display:inline-flex;align-items:center;gap:9px;margin:0 0 14px;color:var(--accent);font-size:.72rem;font-weight:900;letter-spacing:.14em;text-transform:uppercase}
+    .eyebrow::before{content:"";width:28px;height:2px;background:var(--accent)}
+    .intro h1{margin:0;font-size:clamp(2rem,4.5vw,3.4rem);line-height:.95;letter-spacing:-.05em}
+    .intro h1 em{font-style:normal;color:var(--accent)}
+    .intro p{max-width:820px;margin:14px 0 0;color:var(--muted);font-size:clamp(1rem,1.4vw,1.15rem);line-height:1.6}
+    .back-link{margin-top:14px;display:inline-flex;align-items:center;gap:8px;padding:8px 14px;border-radius:999px;background:#fff;border:1px solid var(--line);text-decoration:none;font-size:13px;font-weight:700;color:var(--ink)}
+    .back-link:hover{border-color:var(--accent)}
+
+    .grid{margin-top:18px;display:grid;grid-template-columns: 360px 1fr;gap:18px}
+    @media(max-width:980px){.grid{grid-template-columns:1fr}}
+    .panel{background:var(--paper-strong);border:1px solid var(--line);border-radius:var(--radius);box-shadow:0 16px 40px rgba(35,29,20,.08);overflow:hidden}
+    .panel-head{padding:16px 18px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:12px}
+    .panel-head h2{margin:0;font-size:13px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--orange)}
+    .panel-head small{color:var(--muted);font-size:12px}
+    .controls{padding:16px 18px;display:grid;gap:16px;max-height: 1240px;overflow:auto}
+    .ctrl{padding:12px 14px;background:#FAF7F2;border:1px solid var(--line);border-radius:14px}
+    .ctrl-top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:8px}
+    .ctrl-top label{font-size:12px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:#633806}
+    .ctrl-val{font-size:13px;font-weight:800;color:var(--accent);background:#fff;border:1px solid var(--line);padding:4px 8px;border-radius:999px;min-width:86px;text-align:center}
+    .ctrl input[type=range]{width:100%;accent-color:var(--accent)}
+    .ctrl p{margin:8px 0 0;color:#6b6258;font-size:12px;line-height:1.5}
+    .presets{padding:12px 18px;border-top:1px solid var(--line);display:flex;gap:8px;flex-wrap:wrap;background:#FAF7F2}
+    .preset{padding:8px 12px;border-radius:999px;border:1px solid var(--line);background:#fff;font-size:12px;font-weight:700;cursor:pointer}
+    .preset.is-active{background:var(--accent);color:#fff;border-color:var(--accent)}
+
+    .results{display:grid;gap:16px;padding:18px}
+    .kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+    @media(max-width:700px){.kpis{grid-template-columns:1fr}}
+    .kpi{background:#FAF7F2;border:1px solid var(--line);border-radius:14px;padding:14px}
+    .kpi h3{margin:0 0 6px;font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--orange)}
+    .kpi .big{font-size:26px;font-weight:800;letter-spacing:-.03em;line-height:1}
+    .kpi .sub{margin-top:6px;color:var(--muted);font-size:12.5px;line-height:1.5}
+    .kpi .bar{height:6px;border-radius:999px;background:rgba(23,23,20,.08);overflow:hidden;margin-top:10px}
+    .kpi .bar i{display:block;height:100%;border-radius:999px}
+    .kpi.total{background:#171714;color:#fff;border-color:#171714}
+    .kpi.total h3{color:#cce8b8}
+    .kpi.total .sub{color:rgba(255,255,255,.75)}
+
+    .table-wrap{background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden}
+    .table-wrap h3{margin:0;padding:14px 16px;font-size:13px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--orange);border-bottom:1px solid var(--line);background:#FAF7F2}
+    table{width:100%;border-collapse:collapse}
+    th{font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#6b6258;background:#FDF6EC;padding:10px 12px;text-align:left;border-bottom:1px solid var(--line)}
+    td{padding:12px 12px;font-size:13px;line-height:1.5;border-bottom:1px solid rgba(23,23,20,.08);vertical-align:top}
+    td:nth-child(3),td:nth-child(4),th:nth-child(3),th:nth-child(4){text-align:right;white-space:nowrap}
+    .gain{font-weight:800;color:var(--green)}
+    .pill{font-size:11px;font-weight:800;padding:4px 8px;border-radius:999px;display:inline-block}
+    .pill.high{background:#e6f4e9;color:#1d5a3e}
+    .pill.med{background:#fff3d6;color:#7a4b00}
+    .foot{padding:14px 16px;background:#FAF7F2;border-top:1px solid var(--line);display:flex;flex-wrap:wrap;gap:12px;justify-content:space-between;align-items:center}
+    .foot p{margin:0;color:#5a5752;font-size:12.5px;line-height:1.6;max-width:620px}
+    .foot a{display:inline-flex;align-items:center;gap:8px;padding:10px 14px;border-radius:999px;background:var(--accent);color:#fff;text-decoration:none;font-weight:800;font-size:13px}
+
+    .note{margin-top:18px;padding:14px 16px;background:#fff;border:1px solid var(--line);border-radius:12px;color:#5a5752;font-size:12.5px;line-height:1.6}
+    .note strong{color:var(--ink)}
+    .site-footer{display:flex;justify-content:space-between;gap:24px;max-width:var(--max);margin:32px auto 0;padding:24px clamp(18px,4vw,40px);color:var(--muted);border-top:1px solid var(--line);font-size:.78rem}
+    @media(max-width:700px){.site-footer{flex-direction:column}}
+  </style>
+</head>
+<body id="top">
+  <header class="site-header">
+    <div class="pnav-left">
+      <a class="pnav-back" href="StrategicUX_index.html#slide-13"><span class="pnav-back-ic"><svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M13 8H3m0 0 4.5-4.5M3 8l4.5 4.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Back to case study</a>
+      <span class="pnav-sep" aria-hidden="true"></span>
+      <a class="brand" href="StrategicUX_index.html">
+        <span class="brand-mark">FD</span>
+        <span class="brand-tx"><span class="brand-kicker">Case Study 02 · Strategic UX</span><span class="brand-name">ROI Calculator</span></span>
+      </a>
+    </div>
+    <div class="pnav-right"><nav class="pnav-links"><a href="index.html#work">Work</a><a href="StrategicUX_index.html">Case study</a><a class="pnav-cta" href="StrategicUX_index.html#slide-13">View slide 13</a></nav></div>
+  </header>
+
+  <main class="wrap">
+    <section class="intro">
+      <p class="eyebrow">Food Delivery — Waiting Anxiety · Interactive</p>
+      <h1>What is <em>calmer waiting</em> worth?</h1>
+      <p>Adjust the assumptions below — every number updates live. Defaults are <strong>conservative</strong> (we use 6 orders/yr, not the 15–18 observed) so you can’t overclaim. Share a preset with stakeholders, then pressure-test the upside.</p>
+      <a class="back-link" href="StrategicUX_index.html#slide-13">← Back to Slide 13: UX Guidelines &amp; ROI</a>
+    </section>
+
+    <section class="grid">
+      <!-- Controls -->
+      <aside class="panel" aria-label="Assumptions">
+        <div class="panel-head"><h2>Assumptions</h2><small>Live update</small></div>
+        <div class="controls" id="controls"></div>
+        <div class="presets" id="presets">
+          <button class="preset is-active" data-preset="conservative">Conservative</button>
+          <button class="preset" data-preset="base">Base case</button>
+          <button class="preset" data-preset="optimistic">Optimistic</button>
+          <button class="preset" data-preset="custom">Custom</button>
+        </div>
+      </aside>
+
+      <!-- Results -->
+      <section class="panel" aria-label="Results">
+        <div class="panel-head"><h2>Impact on your target cohort</h2><small id="scopeLabel">500,000 users in scope</small></div>
+        <div class="results">
+          <div class="kpis">
+            <div class="kpi"><h3>Retention uplift</h3><div class="big" id="k-retention">₹2.31 Cr</div><div class="sub" id="k-retention-sub">50,000 users retained · 10 pts churn cut</div><div class="bar"><i id="bar-ret" style="width:32%;background:#2b7a66"></i></div></div>
+            <div class="kpi"><h3>Frequency uplift</h3><div class="big" id="k-frequency">₹7.70 Cr</div><div class="sub" id="k-frequency-sub">500,000 users · +2 orders/yr</div><div class="bar"><i id="bar-freq" style="width:74%;background:#0e9b8c"></i></div></div>
+            <div class="kpi total"><h3>Total incremental value</h3><div class="big" id="k-total">₹10.37 Cr / yr</div><div class="sub" id="k-total-sub">Per year · on 500K cohort · excludes referral &amp; NPS upside</div><div class="bar" style="background:rgba(255,255,255,.18)"><i id="bar-total" style="width:100%;background:#cce8b8"></i></div></div>
+          </div>
+
+          <div class="table-wrap">
+            <h3>Breakdown — Three value drivers</h3>
+            <table>
+              <thead><tr><th>Value driver</th><th>What changes</th><th>Users affected</th><th>Annual gain</th></tr></thead>
+              <tbody>
+                <tr><td><span class="pill high">Retention</span> <strong>Churn cut</strong></td><td id="td-ret-desc">10-pt reduction on 500K = 50,000 retained</td><td id="td-ret-users">50,000</td><td class="gain" id="td-ret-gain">₹2.31 Cr</td></tr>
+                <tr><td><span class="pill med">Frequency</span> <strong>+ orders / yr</strong></td><td id="td-freq-desc">+2 orders/yr across 500K cohort</td><td id="td-freq-users">500,000</td><td class="gain" id="td-freq-gain">₹7.70 Cr</td></tr>
+                <tr><td><span class="pill med">Support</span> <strong>Deflection</strong></td><td id="td-sup-desc">–20% WISMO tickets · ₹45/ticket</td><td id="td-sup-users">500,000</td><td class="gain" id="td-sup-gain">₹0.36 Cr</td></tr>
+              </tbody>
+            </table>
+            <div class="foot">
+              <p id="footNote">Assumes ₹77 commission/order (22% of ₹350) and 6 baseline orders/yr. Support = 0.8 tickets/user/yr. Breakeven on build in &lt;3 mo at 500K scope.</p>
+              <a href="#" id="copyLink">Copy shareable link →</a>
+            </div>
+          </div>
+
+          <div class="note" id="sensitivity">
+            <strong>Sensitivity:</strong> If frequency uplift is only +1 (half), total = ₹6.52 Cr. If churn cut is 15 pts, total = ₹11.53 Cr. Try the sliders to see where the bet is robust.
+          </div>
+
+          <div class="note">
+            <strong>How we kept it honest:</strong> Baseline uses 6 orders/yr (survey showed 5–6 per 4 months ≈ 15–18/yr). Frequency +2 is below the +3.4 seen in the “clear ETA” pilot. Churn cut claims only anxiety-driven churn (∼40% of 35%). Support saving counts only “Where is my order?” contacts at verified ₹45 cost.
+          </div>
+        </div>
+      </section>
+    </section>
+
+    <div class="note" style="margin-top:18px">
+      <strong>Methodology:</strong> Retention gain = (MAU × segment% × target% × churn-reduction-pts) × (orders/yr × commission). Frequency gain = (MAU × segment% × target%) × (uplift × commission). Support gain = (MAU × segment% × target%) × (tickets/yr × reduction% × cost/ticket). All figures are annual, India ₹. Use the export button to share a URL with your exact assumptions — it encodes the slider state in the hash.
+    </div>
+  </main>
+
+  <footer class="site-footer"><span><strong>Food Delivery: Waiting Anxiety</strong><br/>Interactive ROI calculator · Linked from Slide 13</span><span><a href="StrategicUX_index.html#slide-13" style="color:var(--accent);font-weight:800;text-decoration:none">← Back to UX Guidelines &amp; ROI</a></span></footer>
+
+  <script>
+  (() => {
+    const fmtNumber = (n) => n.toLocaleString('en-IN');
+    const fmtCr = (n) => {
+      if (n >= 1e7) return '₹' + (n/1e7).toFixed(2) + ' Cr';
+      if (n >= 1e5) return '₹' + (n/1e5).toFixed(2) + ' L';
+      return '₹' + fmtNumber(Math.round(n));
+    };
+    const params = [
+      {key:'mau', label:'Zomato MAU (India)', min:5, max:50, step:1, def:20, unit:' M', scale:1e6, hint:'Monthly active users. Default 20M (public).'},
+      {key:'seg', label:'Infrequent segment % of MAU', min:10, max:40, step:1, def:25, unit:'%', hint:'Share of MAU who order infrequently (Eshi-like).'},
+      {key:'target', label:'Target for improvement % of segment', min:2, max:25, step:1, def:10, unit:'%', hint:'What slice of the infrequent segment gets the new experience first.'},
+      {key:'churn', label:'Current annual churn in segment', min:15, max:55, step:1, def:35, unit:'%', hint:'Baseline churn before intervention.'},
+      {key:'churnCut', label:'Churn reduction (points)', min:3, max:20, step:1, def:10, unit:' pts', hint:'Absolute points cut (e.g., 35% → 25% = 10 pts).'},
+      {key:'orders', label:'Baseline orders / user / yr', min:4, max:12, step:1, def:6, unit:'/yr', hint:'Conservative baseline; survey showed 5–6 per 4 months.'},
+      {key:'aov', label:'Avg order value', min:200, max:600, step:10, def:350, unit:' ₹', fmt:(v)=>'₹'+v, hint:'Zomato India AOV.'},
+      {key:'take', label:'Platform take', min:12, max:30, step:1, def:22, unit:'%', hint:'Commission applied to AOV to get revenue/order.'},
+      {key:'uplift', label:'Frequency uplift', min:0, max:4, step:0.5, def:2, unit:' orders/yr', hint:'Extra orders per user per year from trust.'},
+      {key:'ticketCost', label:'Cost per support ticket', min:20, max:80, step:5, def:45, unit:' ₹', fmt:(v)=>'₹'+v, hint:'Fully-loaded cost to resolve WISMO contact.'},
+      {key:'tickets', label:'WISMO tickets / user / yr (baseline)', min:0.2, max:2, step:0.1, def:0.8, unit:'', hint:'“Where is my order?” contacts per user per year.'},
+      {key:'ticketCut', label:'Support deflection', min:5, max:40, step:5, def:20, unit:'%', hint:'Reduction in WISMO tickets from calmer waits.'},
+    ];
+    const presets = {
+      conservative:{mau:20, seg:25, target:10, churn:35, churnCut:10, orders:6, aov:350, take:22, uplift:2, ticketCost:45, tickets:0.8, ticketCut:20},
+      base:{mau:20, seg:25, target:10, churn:35, churnCut:12, orders:8, aov:380, take:22, uplift:2.5, ticketCost:45, tickets:0.9, ticketCut:25},
+      optimistic:{mau:22, seg:28, target:12, churn:35, churnCut:15, orders:10, aov:400, take:23, uplift:3, ticketCost:50, tickets:1.0, ticketCut:30},
+    };
+    const controlsEl = document.getElementById('controls');
+    const state = {};
+    // Build controls
+    params.forEach(p=>{
+      const wrap=document.createElement('div'); wrap.className='ctrl';
+      wrap.innerHTML = '<div class="ctrl-top"><label for="r-'+p.key+'">'+p.label+'</label><span class="ctrl-val" id="v-'+p.key+'"></span></div><input type="range" id="r-'+p.key+'" min="'+p.min+'" max="'+p.max+'" step="'+p.step+'"><p>'+p.hint+'</p>';
+      controlsEl.appendChild(wrap);
+      const input=wrap.querySelector('input');
+      input.value = p.def;
+      state[p.key]=p.def;
+      input.addEventListener('input', e=>{
+        state[p.key]= parseFloat(e.target.value);
+        if(p.key==='tickets') state[p.key]= parseFloat(state[p.key].toFixed(1));
+        update();
+        markCustom();
+      });
+    });
+    function update(){
+      // calculate
+      const mau = state.mau * 1e6;
+      const segUsers = mau * (state.seg/100);
+      const cohort = segUsers * (state.target/100);
+      const commission = state.aov * (state.take/100);
+      const revPerUser = state.orders * commission;
+      const churnSaved = cohort * (state.churnCut/100);
+      const retentionGain = churnSaved * revPerUser;
+      const frequencyGain = cohort * (state.uplift * commission);
+      const supportGain = cohort * (state.tickets * (state.ticketCut/100) * state.ticketCost);
+      const total = retentionGain + frequencyGain + supportGain;
+      // update labels
+      params.forEach(p=>{
+        const el=document.getElementById('v-'+p.key);
+        const v=state[p.key];
+        let txt;
+        if(p.fmt) txt=p.fmt(v);
+        else if(p.unit===' M') txt=v+' M';
+        else if(p.unit==='%'||p.unit===' pts') txt=v+p.unit;
+        else if(p.unit==='/yr') txt=v+' /yr';
+        else if(p.unit===' ₹') txt='₹'+v;
+        else if(p.key==='tickets') txt=v.toFixed(1)+' /yr';
+        else txt=v+p.unit;
+        el.textContent=txt;
+        const inp=document.getElementById('r-'+p.key);
+        if(inp) inp.value=v;
+      });
+      document.getElementById('scopeLabel').textContent = fmtNumber(Math.round(cohort)) + ' users in scope · ' + state.target + '% of infrequent segment';
+      document.getElementById('k-retention').textContent = fmtCr(retentionGain);
+      document.getElementById('k-retention-sub').textContent = fmtNumber(Math.round(churnSaved)) + ' retained · ' + state.churnCut + ' pts churn cut (₹' + Math.round(revPerUser) + '/yr saved)';
+      document.getElementById('k-frequency').textContent = fmtCr(frequencyGain);
+      document.getElementById('k-frequency-sub').textContent = fmtNumber(Math.round(cohort)) + ' users · +' + state.uplift + ' orders/yr (₹' + Math.round(commission) + '/order)';
+      document.getElementById('k-total').textContent = fmtCr(total) + ' / yr';
+      document.getElementById('k-total-sub').textContent = 'Per year · on ' + fmtNumber(Math.round(cohort)) + ' cohort · ' + state.orders + ' orders × ₹' + Math.round(commission) + ' commission';
+      // table
+      document.getElementById('td-ret-desc').textContent = state.churnCut + '-pt cut on ' + fmtNumber(Math.round(cohort)) + ' = ' + fmtNumber(Math.round(churnSaved)) + ' retained';
+      document.getElementById('td-ret-users').textContent = fmtNumber(Math.round(churnSaved));
+      document.getElementById('td-ret-gain').textContent = fmtCr(retentionGain);
+      document.getElementById('td-freq-desc').textContent = '+' + state.uplift + ' orders/yr across ' + fmtNumber(Math.round(cohort)) + ' users';
+      document.getElementById('td-freq-users').textContent = fmtNumber(Math.round(cohort));
+      document.getElementById('td-freq-gain').textContent = fmtCr(frequencyGain);
+      document.getElementById('td-sup-desc').textContent = '–' + state.ticketCut + '% WISMO · ₹' + state.ticketCost + '/ticket · ' + state.tickets.toFixed(1) + '/yr baseline';
+      document.getElementById('td-sup-users').textContent = fmtNumber(Math.round(cohort));
+      document.getElementById('td-sup-gain').textContent = fmtCr(supportGain);
+      document.getElementById('footNote').textContent = 'Assumes ₹' + Math.round(commission) + ' commission/order (' + state.take + '% of ₹' + state.aov + ') and ' + state.orders + ' baseline orders/yr. Support = ' + state.tickets.toFixed(1) + ' tickets/user/yr × ₹' + state.ticketCost + '. Breakeven on build in <3 mo at ' + fmtNumber(Math.round(cohort)) + ' scope.';
+      // sensitivity
+      const halfFreq = cohort * ((state.uplift/2) * commission);
+      const halfTotal = retentionGain + halfFreq + supportGain;
+      const highChurn = (cohort*(15/100)) * revPerUser;
+      const highTotal = highChurn + frequencyGain + supportGain;
+      document.getElementById('sensitivity').innerHTML = '<strong>Sensitivity:</strong> If frequency uplift is only +' + (state.uplift/2) + ' (half), total = ' + fmtCr(halfTotal) + '. If churn cut is 15 pts, total = ' + fmtCr(highTotal) + '. Move the sliders to find the breakeven.';
+      // bars
+      const max = Math.max(retentionGain, frequencyGain, supportGain, 1);
+      document.getElementById('bar-ret').style.width = Math.max(8, (retentionGain/max)*100) + '%';
+      document.getElementById('bar-freq').style.width = Math.max(8, (frequencyGain/max)*100) + '%';
+      document.getElementById('bar-total').style.width = '100%';
+      // hash
+      const hash = Object.entries(state).map(([k,v])=>k+'='+v).join('&');
+      history.replaceState(null,'', '#'+hash);
+    }
+    function applyPreset(name){
+      const p=presets[name];
+      if(!p) return;
+      Object.entries(p).forEach(([k,v])=> state[k]=v);
+      update();
+      document.querySelectorAll('.preset').forEach(b=> b.classList.toggle('is-active', b.dataset.preset===name));
+    }
+    function markCustom(){
+      document.querySelectorAll('.preset').forEach(b=> b.classList.toggle('is-active', b.dataset.preset==='custom'));
+    }
+    document.getElementById('presets').addEventListener('click', e=>{
+      const b=e.target.closest('.preset');
+      if(!b) return;
+      if(b.dataset.preset==='custom') { markCustom(); return; }
+      applyPreset(b.dataset.preset);
+    });
+    // load from hash
+    if(location.hash.length>1){
+      try{
+        const parts=location.hash.slice(1).split('&');
+        parts.forEach(pair=>{
+          const [k,v]=pair.split('=');
+          if(k in state && !isNaN(parseFloat(v))) state[k]=parseFloat(v);
+        });
+      }catch(_){}
+    }
+    document.getElementById('copyLink').addEventListener('click', e=>{
+      e.preventDefault();
+      const url=location.href;
+      navigator.clipboard.writeText(url).then(()=>{
+        e.target.textContent='Copied ✓';
+        setTimeout(()=> e.target.textContent='Copy shareable link →', 1500);
+      });
+    });
+    // initial preset detection
+    const isConservative = Object.entries(presets.conservative).every(([k,v])=> state[k]===v);
+    if(isConservative) document.querySelector('[data-preset="conservative"]').classList.add('is-active');
+    update();
+  })();
+  </script>
+</body>
+</html>
