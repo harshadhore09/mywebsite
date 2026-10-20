@@ -89,6 +89,29 @@ for (const file of Object.keys(PAGES)) {
     ok(h.doc.querySelectorAll('.pnav-dd-menu .pnav-proj').length === 3, 'project menu keeps all three case-study links');
   }
   if (file === 'StrategicUX_index.html') {
+    section('  food-delivery labels match the testing and high-fidelity artwork');
+    const sections = [
+      [23, 'Prototype testing insights: Participant 1', '23.html', 'participant one'],
+      [24, 'Testing: Participant 2', '24.html', 'participant two'],
+      [25, 'Testing: Participant 3', '25.html', 'participant three'],
+      [26, 'Testing: Participant 4', '26.html', 'participant four'],
+      [27, 'Hi-Fidelity: On-time order', '27.html', 'when order is on time'],
+      [30, 'Hi-Fidelity: Delayed order', '30.html', 'when order gets delayed'],
+    ];
+    for (const [number, title, source, description] of sections) {
+      const i = number - 1;
+      const pill = h.pills[i];
+      const slide = h.slides[i];
+      ok(pill.querySelector('b').textContent === String(number) &&
+         pill.querySelector('span').textContent === title,
+         'rail section ' + number + ' is labelled "' + title + '"');
+      ok(slide.querySelector('[data-slide-src]').dataset.slideSrc === 'slides/strategic-ux/' + source &&
+         slide.querySelector('[aria-label]').getAttribute('aria-label').includes(description),
+         'section ' + number + ' describes the correct artwork');
+      pill.dispatchEvent(new h.window.MouseEvent('click', { bubbles: true, cancelable: true }));
+      ok(h.activeIndex() === i && h.window.location.hash === '#' + slide.id,
+         'clicking section ' + number + ' selects its matching slide');
+    }
     h.scrollTo(h.window.__test.offsets[12] - cfg.headerH - cfg.railH);
     ok(h.pills[12].getAttribute('aria-current') === 'true', 'the shared rail marks slide 13 as current');
     ok(h.doc.querySelectorAll('.pnav-dd-menu .pnav-proj').length === 3, 'project menu keeps all three case-study links');
