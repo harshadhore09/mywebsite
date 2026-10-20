@@ -32,7 +32,7 @@
   /* ---- 2. the strip: reuse an authored one, else build it ---------- */
   const info = (el, i) => {
     // Medical Adherence and Food Delivery author the name on the slide itself
-    // numbered by position: Food Delivery's authored data-slide skips 24
+    // numbered by position, so a newly inserted slide needs no code change
     if (el.dataset.screenTitle) {
       return { num: pad2(i + 1), name: el.dataset.screenTitle.trim() };
     }
