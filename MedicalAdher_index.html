@@ -209,6 +209,19 @@
     .sld-rail a { padding:6px 10px; font-size:11.5px; }
   }
   @media print { .sld-rail { display:none; } }
+
+  /* ===== back to top — unified circular arrow (matches MBG + StrategicUX) ===== */
+  .back-top{
+    position:fixed; bottom:22px; right:clamp(16px,3vw,24px); width:44px; height:44px;
+    display:grid; place-items:center; background:#0d0d0f; color:#fff; border:none; border-radius:50%;
+    cursor:pointer; opacity:0; pointer-events:none; transform:translateY(10px);
+    transition:opacity .2s ease, transform .2s ease, background .2s ease; z-index:80;
+    box-shadow:0 8px 24px rgba(0,0,0,.22);
+  }
+  .back-top.is-visible, .back-top.show{opacity:1; pointer-events:auto; transform:translateY(0)}
+  .back-top:hover, .back-top:focus-visible{background:#1a1a18; outline:none}
+  .back-top:focus-visible{box-shadow:0 0 0 3px rgba(255,255,255,.6),0 8px 24px rgba(0,0,0,.22)}
+  .back-top svg{width:17px; height:17px; display:block}
 </style>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -400,6 +413,34 @@
 
 </div>
 </div>
+
+<button class="back-top" id="backTop" type="button" aria-label="Back to top"><svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="m4 12 6-6 6 6M10 7v8" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+<script>
+/* Back-to-top — unified across MBG / StrategicUX / MedicalAdher */
+(() => {
+  const btn = document.getElementById('backTop');
+  const deck = document.getElementById('deck');
+  if (!btn) return;
+  function sync(){
+    const winY = window.scrollY || document.documentElement.scrollTop || 0;
+    const deckY = (deck && deck.scrollHeight > deck.clientHeight) ? deck.scrollTop : 0;
+    const y = Math.max(winY, deckY);
+    const threshold = Math.min(520, window.innerHeight * 0.6);
+    const show = y > threshold;
+    btn.classList.toggle('is-visible', show);
+    btn.classList.toggle('show', show);
+  }
+  function goTop(){
+    if (deck && deck.scrollTop > 0) deck.scrollTo({top:0, behavior:'smooth'});
+    window.scrollTo({top:0, behavior:'smooth'});
+  }
+  btn.addEventListener('click', goTop);
+  window.addEventListener('scroll', sync, {passive:true});
+  if (deck) deck.addEventListener('scroll', sync, {passive:true});
+  window.addEventListener('resize', sync, {passive:true});
+  sync();
+})();
+</script>
 
 <script>
 /* Project header navigation: back link, projects menu, mobile menu (independent of the page's own scripts) */
