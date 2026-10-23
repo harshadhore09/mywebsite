@@ -241,6 +241,9 @@
     /* --- Chips --- */
     .hero-tags .chip {
       position: relative;
+      display: inline-grid;
+      align-items: center;
+      justify-items: center;
       padding: 7px 18px;
       border-radius: 9999px;
       background: #F9E8C3;
@@ -253,11 +256,12 @@
       transition: transform .28s cubic-bezier(.22,1,.36,1),
                   box-shadow .28s ease, border-color .28s ease, background .28s ease;
     }
-    .hero-tags .chip span { display: inline-block; transition: transform .35s cubic-bezier(.22,1,.36,1), opacity .25s ease; }
+    /* Both labels size the pill, keeping equal padding without resizing on hover. */
+    .hero-tags .chip span { grid-area: 1 / 1; white-space: nowrap; display: inline-block; transition: transform .35s cubic-bezier(.22,1,.36,1), opacity .25s ease; }
     .hero-tags .chip::after {
       content: attr(data-alt);
-      position: absolute;
-      inset: 0;
+      grid-area: 1 / 1;
+      white-space: nowrap;
       display: flex; align-items: center; justify-content: center;
       transform: translateY(110%);
       opacity: 0;
@@ -1320,8 +1324,8 @@
 
         <!-- Tags: magnetic + flip on hover -->
         <div class="flex flex-wrap gap-3 justify-center lg:justify-start mb-8 hero-tags">
-          <button class="chip" type="button" data-alt="Design Research"><span>MDes • IIT Delhi</span></button>
-          <button class="chip" type="button" data-alt="Top 0.1% • 2023"><span>CEED AIR 69</span></button>
+          <button class="chip" type="button" data-alt="9.13 CGPA · Rank 6"><span>MDes • IIT Delhi</span></button>
+          <button class="chip" type="button" data-alt="Top 0.1% • 2025"><span>CEED AIR 69</span></button>
           <button class="chip" type="button" data-alt="Visual Communication"><span>BFA Applied Arts</span></button>
         </div>
 
