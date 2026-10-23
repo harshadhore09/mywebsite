@@ -1,11 +1,11 @@
 /* =====================================================================
-   Slide rail — scroll-driven slide indicator
+   Slide rail, scroll-driven slide indicator
    Shared by MBG / Medical Adherence / Food Delivery case studies.
 
    Why this exists: the old version asked an IntersectionObserver for
    "the slide that is >= 50% visible". A slide that is taller than twice
    the viewport can never reach that, and a fast trackpad flick carries a
-   slide straight past the threshold between two callbacks — so the
+   slide straight past the threshold between two callbacks, so the
    indicator skipped slides, fired out of order, and then froze.
 
    This version computes the current slide from geometry on every scroll
@@ -36,13 +36,13 @@
     if (el.dataset.screenTitle) {
       return { num: pad2(i + 1), name: el.dataset.screenTitle.trim() };
     }
-    // MBG stamps "01 — Cover" on the artwork
+    // MBG stamps "01, Cover" on the artwork
     const chip = el.querySelector('.slide-num');
     if (chip) {
       const bits = chip.textContent.split('\u2014');
       return { num: (bits[0] || pad2(i + 1)).trim(), name: (bits[1] || '').trim() };
     }
-    // Food Delivery labels the frame: "Cover: Food Delivery — Waiting Anxiety"
+    // Food Delivery labels the frame: "Cover: Food Delivery, Waiting Anxiety"
     const frame = el.querySelector('[aria-label]');
     const raw = frame ? (frame.getAttribute('aria-label') || '') : '';
     const name = raw.indexOf(':') > 0 && raw.indexOf(':') < 26 ? raw.slice(raw.indexOf(':') + 1).trim() : '';

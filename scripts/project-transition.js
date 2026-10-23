@@ -2,7 +2,7 @@
 (() => {
   'use strict';
   const projects = {
-    'MBG_index.html': { number: '01', title: 'Pragati — Mahila Bachat Gat', category: 'Behavioural Design', accent: '#c17a5f' },
+    'MBG_index.html': { number: '01', title: 'Pragati, Mahila Bachat Gat', category: 'Behavioural Design', accent: '#c17a5f' },
     'StrategicUX_index.html': { number: '02', title: 'Food Delivery: Waiting Anxiety', category: 'Strategic UX', accent: '#2b7a66' },
     'MedicalAdher_index.html': { number: '03', title: 'Medical Adherence', category: 'Design Probe', accent: '#8972a5' },
   };

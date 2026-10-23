@@ -8,7 +8,7 @@
    every frame, and the flourish (coin drops, the golden glitter trail)
    must never run for touch readers or when the reader asked for reduced
    motion. Everything it creates is aria-hidden and pointer-events:none,
-   so the case studies stay fully usable without it — and the native
+   so the case studies stay fully usable without it, and the native
    cursor simply stays if this file never loads.
    ===================================================================== */
 
@@ -118,7 +118,7 @@ const PROJECTS = {
     return p;
   }
 
-  /* clicks drop small change — coins kicked out from under the pointer
+  /* clicks drop small change, coins kicked out from under the pointer
      and one bright sparkle, exactly like Pragati's */
   function burst(x, y) {
     if (!on) return;

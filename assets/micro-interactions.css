@@ -4,7 +4,7 @@
    the same on every page. Each case study opts in with
    <html data-project="mbg|food|medical"> and the script
    (scripts/micro-interactions.js) adds .mi-cursor-on only for a fine
-   pointer with motion allowed — touch readers and reduced-motion
+   pointer with motion allowed, touch readers and reduced-motion
    readers keep the native cursor and none of this runs.
    ===================================================================== */
 
@@ -90,7 +90,7 @@ html[data-project] .progress-bar::after {
 }
 
 /* =====================================================================
-   Custom cursor — created by the script, never by markup.
+   Custom cursor, created by the script, never by markup.
    .mi-dot tracks the pointer exactly; .mi-ring lags behind and softens
    on hover. JS owns the per-frame transform so state changes (hover /
    press) can share the same composited write.
