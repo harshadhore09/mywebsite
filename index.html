@@ -218,12 +218,9 @@
     }
     .hero-name:hover::after { width: 100%; }
 
-    /* --- Intro keywords --- */
-    .hero-intro .kw,
-    .hero-tagline .kw {
+    /* --- Headline keywords --- */
+    .hero-headline .kw {
       position: relative;
-      color: #2B2228;
-      font-weight: 500;
       cursor: default;
       transition: color .3s ease;
       background-image: linear-gradient(120deg, rgba(249,232,195,.95), rgba(232,169,195,.75));
@@ -233,31 +230,26 @@
       padding: 0 2px;
       border-radius: 3px;
     }
-    .hero-intro .kw:hover,
-    .hero-tagline .kw:hover {
+    .hero-headline .kw:hover {
       color: #9B2D2D;
       background-size: 100% 38%;
       transition: background-size .5s cubic-bezier(.22,1,.36,1), color .3s ease;
     }
 
-    /* --- Positioning line that opens the hero copy --- */
-    .hero-tagline {
+    /* --- Positioning statement: bold serif, opens the hero copy --- */
+    .hero-headline {
       font-family: 'Playfair Display', Georgia, serif;
-      font-style: italic;
-      font-size: 1.1875rem;      /* 19px */
-      line-height: 1.4;
-      letter-spacing: -.012em;
+      font-weight: 700;
+      font-size: 1.5rem;         /* 24px */
+      line-height: 1.22;
+      letter-spacing: -.022em;
       color: #2B2228;
-      margin-bottom: 12px;
+      margin-bottom: 14px;
     }
-    .hero-tagline .kw { font-style: italic; font-weight: 600; }
 
-    /* --- Intro paragraph: breathing room now that a line follows it --- */
-    .hero-intro { margin-bottom: 14px; }
-
-    /* --- Credentials / focus line under the intro --- */
+    /* --- Supporting paragraph: credentials + focus, in one block --- */
     .hero-cred {
-      font-size: .8125rem;       /* 13px */
+      font-size: .9375rem;       /* 15px */
       line-height: 1.7;
       letter-spacing: .002em;
       color: #6E6259;
@@ -266,8 +258,8 @@
     .hero-cred strong { color: #3A302B; font-weight: 600; }
 
     @media (max-width: 768px) {
-      .hero-tagline { font-size: 1.0625rem; }
-      .hero-cred { font-size: .78125rem; line-height: 1.65; margin-bottom: 24px; }
+      .hero-headline { font-size: 1.3125rem; line-height: 1.26; }
+      .hero-cred { font-size: .875rem; line-height: 1.68; margin-bottom: 24px; }
     }
 
     /* --- Chips: all three badges sit on one line --- */
@@ -1372,23 +1364,16 @@
           Harsha Dhore
         </h1>
 
-        <!-- Positioning line: serif accent, keywords light up on hover -->
-        <p class="hero-tagline max-w-[440px] mx-auto lg:mx-0">
+        <!-- Positioning statement: bold serif headline, keywords light up on hover -->
+        <p class="hero-headline max-w-[460px] mx-auto lg:mx-0">
           Turning <span class="kw">high-friction</span>, <span class="kw">complex systems</span> into
           <span class="kw">intuitive human experiences</span>.
         </p>
 
-        <!-- Intro: keywords light up on hover, whole line reveals word-by-word -->
-        <p class="hero-intro text-[15.5px] leading-relaxed text-[#4A3F3A] max-w-[440px] mx-auto lg:mx-0">
-          I design <span class="kw">research-led</span> digital experiences for people whose needs are often left out of mainstream design,
-          <span class="kw">rural communities</span>, <span class="kw">low-literacy users</span>, and everyday users navigating
-          <span class="kw">complex systems</span>.
-        </p>
-
-        <!-- Credentials: what I bring, in one compact line -->
-        <p class="hero-cred max-w-[440px] mx-auto lg:mx-0">
-          Product &amp; Behavioural Designer at <strong>IIT Delhi</strong> (<strong>9.13 CGPA</strong>) with
-          <strong>~2 years</strong> of full-time industry ownership. I decode <strong>hidden user anxieties</strong>
+        <!-- One-paragraph intro: what I do, who I do it for -->
+        <p class="hero-cred max-w-[460px] mx-auto lg:mx-0">
+          Product &amp; Behavioural Designer at <strong>IIT Delhi</strong> (9.13 CGPA) with
+          <strong>~2 years of full-time industry ownership</strong>. I decode <strong>hidden user anxieties</strong>
           and remove <strong>cognitive barriers</strong> in <strong>FinTech</strong>, consumer apps, and complex workflows.
         </p>
 
@@ -2544,8 +2529,8 @@
       }
 
       /* --- 7. Staggered entrance reveal --- */
-      const stagger = [nameEl, copy.querySelector('.hero-tagline'), copy.querySelector('.hero-intro'),
-                       copy.querySelector('.hero-cred'), copy.querySelector('.hero-tags'), copy.querySelector('.hero-cta')];
+      const stagger = [nameEl, copy.querySelector('.hero-headline'), copy.querySelector('.hero-cred'),
+                       copy.querySelector('.hero-tags'), copy.querySelector('.hero-cta')];
       stagger.forEach((el, i) => {
         if (!el) return;
         el.classList.add('reveal-up');
