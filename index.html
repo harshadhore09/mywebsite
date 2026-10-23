@@ -218,8 +218,12 @@
     }
     .hero-name:hover::after { width: 100%; }
 
-    /* --- Headline keywords --- */
-    .hero-headline .kw {
+    /* --- Headline + supporting-paragraph keywords ---
+       Same marker-highlight sweep everywhere: on hover (or tap, via
+       .is-lit) a cream -> pink wash wipes in under the word and the
+       text shifts to the hero red. */
+    .hero-headline .kw,
+    .hero-cred .kw {
       position: relative;
       cursor: default;
       transition: color .3s ease;
@@ -230,11 +234,22 @@
       padding: 0 2px;
       border-radius: 3px;
     }
-    .hero-headline .kw:hover {
+    /* The supporting paragraph is smaller body text, so its wash sits
+       a touch taller / lower to read as a marker stroke, not a tint. */
+    .hero-cred .kw {
+      background-size: 0% 42%;
+      background-position: 0 92%;
+    }
+    .hero-headline .kw:hover,
+    .hero-headline .kw.is-lit,
+    .hero-cred .kw:hover,
+    .hero-cred .kw.is-lit {
       color: #9B2D2D;
       background-size: 100% 38%;
       transition: background-size .5s cubic-bezier(.22,1,.36,1), color .3s ease;
     }
+    .hero-cred .kw:hover,
+    .hero-cred .kw.is-lit { background-size: 100% 42%; }
 
     /* --- Positioning statement: bold serif, opens the hero copy --- */
     .hero-headline {
@@ -1373,8 +1388,8 @@
         <!-- One-paragraph intro: what I do, who I do it for -->
         <p class="hero-cred max-w-[460px] mx-auto lg:mx-0">
           Product &amp; Behavioural Designer at <strong>IIT Delhi</strong> (9.13 CGPA) with
-          <strong>~2 years of full-time industry ownership</strong>. I decode <strong>hidden user anxieties</strong>
-          and remove <strong>cognitive barriers</strong> in <strong>FinTech</strong>, consumer apps, and complex workflows.
+          <strong>~2 years of full-time industry ownership</strong>. I decode <strong class="kw">hidden user anxieties</strong>
+          and remove <strong class="kw">cognitive barriers</strong> in <strong class="kw">FinTech</strong>, consumer apps, and complex workflows.
         </p>
 
         <!-- Tags: magnetic + flip on hover -->
@@ -1820,7 +1835,7 @@
       }, { passive: true });
 
       // Hover scaling on interactive elements
-      const interactiveElements = document.querySelectorAll('a, button, .work-card, .tk-chip, .sticker, .btn, .nav-dock a');
+      const interactiveElements = document.querySelectorAll('a, button, .work-card, .tk-chip, .sticker, .btn, .nav-dock a, .kw');
       
       interactiveElements.forEach(el => {
         el.addEventListener('mouseenter', () => {
@@ -2485,6 +2500,15 @@
             });
             setTimeout(() => p.remove(), 850);
           }
+        });
+      });
+
+      /* --- 4b. Keywords: tap toggles the highlight (no hover on touch) --- */
+      copy.querySelectorAll('.kw').forEach(kw => {
+        kw.addEventListener('click', () => {
+          const wasLit = kw.classList.contains('is-lit');
+          copy.querySelectorAll('.kw.is-lit').forEach(el => el.classList.remove('is-lit'));
+          if (!wasLit) kw.classList.add('is-lit');
         });
       });
 
