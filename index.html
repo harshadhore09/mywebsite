@@ -558,7 +558,8 @@
     .section {
       position: relative;
       z-index: 10;
-      padding: 92px 0;
+      /* vertical only, so each section's `px-6` gutter is not overwritten */
+      padding-block: 92px;
     }
 
     .section-header {
@@ -654,6 +655,9 @@
       .about-grid { grid-template-columns: 1fr; gap: 34px; }
       .about-col-right { padding-top: 0; }
     }
+    /* the manifesto is longer than a section title, so it sets its own size */
+    .about-head { font-size: clamp(2.15rem, 3.3vw, 2.7rem); }
+    @media (max-width: 640px) { .about-head { font-size: 1.98rem; } }
 
     /* keep the last element clear of the floating dock */
     #about { padding-bottom: 124px; }
@@ -668,6 +672,7 @@
       transition: transform .25s cubic-bezier(.22,1,.36,1), background .3s ease, border-color .3s ease, color .3s ease;
     }
     .journal-stamp:hover { background: rgba(193,122,95,.08); border-color: #C17A5F; }
+    .journal-stamp:focus-visible { outline: 2px solid rgba(193,122,95,.5); outline-offset: 4px; }
     .journal-stamp .stamp-page { font-style: normal; font-size: .72em; opacity: .65; letter-spacing: .04em; }
     .journal-stamp.stamped {
       animation: stampHit .45s cubic-bezier(.3,1.6,.5,1);
@@ -677,11 +682,16 @@
     @keyframes stampHit { 0%{transform:scale(1.18) rotate(-6deg);} 60%{transform:scale(.97) rotate(1.5deg);} 100%{transform:scale(1) rotate(-2.5deg);} }
 
     /* headline say / do */
-    .about-head .say-word, .about-head .do-word {
+    .about-head .say-word, .about-head .do-word, .about-head .measure-word {
       position: relative; cursor: help;
       transition: color .3s ease;
       background-repeat: no-repeat; background-size: 100% 0%;
       background-position: 0 92%;
+    }
+    .about-head .say-word:focus-visible,
+    .about-head .do-word:focus-visible,
+    .about-head .measure-word:focus-visible {
+      outline: 2px solid rgba(193,122,95,.5); outline-offset: 5px; border-radius: 3px;
     }
     .about-head .say-word { color: #9B7C55; text-decoration: underline wavy rgba(155,124,85,.4) 2px; text-underline-offset: 7px; }
     .about-head .do-word  { color: #9B2D2D; }
@@ -692,10 +702,20 @@
     }
     .about-head .do-word:hover::after { transform: scaleX(1); }
     .about-head .say-word:hover { color: #C17A5F; }
+    .about-head .measure-word {
+      color: #4C8C6B; cursor: help;
+      text-decoration: underline dotted rgba(76,140,107,.45) 2px;
+      text-underline-offset: 7px;
+      transition: color .3s ease, text-decoration-color .3s ease;
+    }
+    .about-head .measure-word:hover { color: #376B50; text-decoration-color: rgba(76,140,107,.9); }
+
+    /* body copy — bold carries the credentials, not decoration */
+    .about-body strong { color: #2B2228; font-weight: 600; }
 
     /* floating margin note */
     .margin-note {
-      position: fixed; z-index: 9998; max-width: 250px;
+      position: fixed; z-index: 9998; max-width: 264px;
       background: #FFFDF7; border: 1px solid #E8E0CE;
       border-left: 3px solid #C17A5F;
       padding: 10px 13px; border-radius: 8px;
@@ -811,6 +831,20 @@
       transition: all .35s ease;
     }
 
+    /* profile header: name + role get the room, badge tucks right */
+    .profile-head {
+      display: grid; grid-template-columns: 56px minmax(0, 1fr) auto;
+      align-items: center; gap: 14px; margin-bottom: 24px;
+    }
+    .profile-id { min-width: 0; }
+    .profile-sub { font-size: 12.7px; line-height: 1.4; color: #665C5C; text-wrap: pretty; }
+    .profile-head .growth-pill { flex: none; margin-left: auto; white-space: nowrap; }
+    /* not enough room for a third column: badge settles under the name */
+    @media (max-width: 520px), (max-width: 1160px) and (min-width: 901px) {
+      .profile-head { grid-template-columns: 56px minmax(0, 1fr); }
+      .profile-head .growth-pill { grid-column: 2; justify-self: start; margin-left: 0; margin-top: 2px; }
+    }
+
     /* skills */
     .skill-grid .skill {
       position: relative; display: flex; align-items: center; gap: 12px;
@@ -830,16 +864,41 @@
     .skill-grid .skill.active > i:first-child { color: #E8A9C3; }
     .skill-grid .skill.active .skill-plus { transform: rotate(135deg); color: #E8A9C3; }
 
+    /* between the stacked and the wide layout the card is at its narrowest */
+    @media (min-width: 901px) and (max-width: 1120px) {
+      .skill-grid .skill { padding: 11px 13px; gap: 9px; font-size: .82rem; }
+    }
+    /* two chips per row stop fitting well before the card itself does */
+    @media (max-width: 520px) { .skill-grid { grid-template-columns: 1fr; } }
+
     .skill-drawer {
       max-height: 0; overflow: hidden;
       transition: max-height .5s cubic-bezier(.22,1,.36,1), opacity .35s ease, margin-top .4s ease;
       opacity: 0;
     }
-    .skill-drawer.open { max-height: 210px; opacity: 1; margin-top: 16px; }
+    .skill-drawer.open { opacity: 1; margin-top: 16px; }
     .skill-drawer-in {
       background: #FFFDF7; border: 1px dashed #E3D9C4; border-radius: 16px; padding: 16px 18px;
     }
-    .skill-drawer-in p { font-size: 13.6px; line-height: 1.6; color: #4A3F3A; margin: 0 0 12px; }
+    .skill-drawer-in p { font-size: 13.4px; line-height: 1.6; color: #4A3F3A; margin: 0; }
+    .skill-drawer-in p + p { margin-top: 9px; }
+    .skill-drawer-in strong { color: #2B2228; font-weight: 600; }
+    .skill-focus {
+      font-size: 12.5px !important; line-height: 1.55;
+      color: #6B605C; background: rgba(193,122,95,.08);
+      border-radius: 10px; padding: 9px 11px;
+    }
+    .skill-focus span {
+      display: inline-block; margin-right: 5px;
+      font-size: 10px; letter-spacing: .1em; text-transform: uppercase;
+      font-weight: 700; color: #C17A5F;
+    }
+    .skill-list {
+      margin: 0; padding-left: 17px;
+      display: flex; flex-direction: column; gap: 8px;
+    }
+    .skill-list li { font-size: 13.1px; line-height: 1.55; color: #4A3F3A; padding-left: 2px; }
+    .skill-list li::marker { color: #C17A5F; font-weight: 600; }
     .skill-rule { height: 2px; border-radius: 2px; background: #EDE4D3; overflow: hidden; }
     .skill-rule span {
       display: block; height: 100%; width: 0; border-radius: 2px;
@@ -860,6 +919,7 @@
     @media (prefers-reduced-motion: reduce) {
       .about-rise { opacity: 1 !important; transform: none !important; animation: none !important; }
       .about-tilt { transform: none !important; }
+      .skill-drawer, .skill-rule span { transition: none !important; }
     }
 
     /* ===== TOOLKIT / SKILLS ===== */
@@ -1375,20 +1435,23 @@
         <!-- LEFT -->
         <div class="about-col-left">
           <!-- eyebrow becomes a rubber stamp -->
-          <span class="eyebrow journal-stamp" id="journalStamp" title="stamp me">
+          <span class="eyebrow journal-stamp" id="journalStamp" role="button" tabindex="0" title="stamp me">
             Journal • 2025 <em class="stamp-page" id="stampPage">pg 03</em>
           </span>
 
-          <h2 class="serif text-5xl md:text-[3.05rem] leading-none tracking-tighter mt-2 mb-5 about-head" id="aboutHead">
-            I design for the gap between what people
-            <span class="say-word" data-note="Stated preferences in an interview: what people believe they will do." data-tag="what people report">say</span>
-            and what they
-            <span class="do-word" data-note="Observed behaviour in context: what constraints, habit and environment actually produce." data-tag="what people do">actually do</span>.
+          <h2 class="serif leading-none tracking-tighter mt-2 mb-5 about-head" id="aboutHead">
+            I design for the gap between what users
+            <span class="say-word" tabindex="0" aria-describedby="aboutNote" data-note="Stated preferences in an interview: what people believe they will do, filtered by memory, intention, and a wish to sound rational." data-tag="WHAT PEOPLE REPORT">say</span>,
+            what they
+            <span class="do-word" tabindex="0" aria-describedby="aboutNote" data-note="Observed behaviour in context: what constraints, cognitive fatigue, emotional anxiety and environment actually produce." data-tag="WHAT PEOPLE DO">actually do</span>,
+            and what
+            <span class="measure-word" tabindex="0" aria-describedby="aboutNote" data-note="Commercial reality: conversion rates, drop-off reduction, adoption velocity and lower support costs that prove the design works." data-tag="WHAT BUSINESSES MEASURE">business metrics demand</span>.
           </h2>
 
           <div class="space-y-3 text-[0.97rem] text-[#665C5C] about-body">
-            <p>I&rsquo;m Harsha Dhore, a design researcher and MDes candidate at IIT Delhi, with a background in fine arts. I work on digital experiences for users who are usually designed around rather than designed for.</p>
-            <p>My approach is research-led: understand the context first, then design for the behaviour that already exists. I combine extended field research with structured behavioural frameworks, and I test with the people the product is actually for.</p>
+            <p>I&rsquo;m Harsha Dhore, a <strong>Product &amp; Behavioural Designer</strong> completing my Master of Design at <strong>IIT Delhi (9.13 CGPA, Dept. Rank 6)</strong>. Backed by a BFA and nearly two years of full-time industry experience, I bridge human psychology with high-craft product execution.</p>
+            <p>Before IIT Delhi I was the sole designer at <strong>Pagariya Consumer Foods</strong>, taking Pagariya Mart from a 0-to-1 brand launch to <strong>36% digital revenue contribution</strong>.</p>
+            <p>My work is research-led and evidence-backed: uncover latent friction through on-ground contextual inquiry, model decisions with <strong>COM-B and Fogg&rsquo;s Behaviour Model</strong>, then design interfaces that remove cognitive load, silent drop-offs and user anxiety.</p>
           </div>
 
           <!-- DRAG-TO-COMPARE field note -->
@@ -1396,19 +1459,19 @@
             <div class="gapbox-inner">
               <div class="gap-said" id="gapSaid">
                 <span class="gap-label"><i class="fas fa-comment-dots"></i> stated behaviour</span>
-                <p>What users tell you in an interview &mdash; shaped by memory, intention and a wish to be helpful.</p>
+                <p>What users tell you in an interview, shaped by memory, intention and a wish to sound rational.</p>
               </div>
               <div class="gap-did" id="gapDid">
                 <div class="gap-did-inner">
                   <span class="gap-label"><i class="fas fa-eye"></i> observed behaviour</span>
-                  <p>What they actually do in context &mdash; shaped by constraints, habit and the people around them.</p>
+                  <p>What users actually do in context, guided by cognitive fatigue, real constraints, mental shortcuts and trust anxiety.</p>
                 </div>
               </div>
               <div class="gap-handle" id="gapHandle">
                 <span class="gap-grip"><i class="fas fa-arrows-left-right"></i></span>
               </div>
             </div>
-            <div class="gap-hint">drag across — what they say, and what they actually do</div>
+            <div class="gap-hint">drag to compare what they say with what they actually do</div>
           </div>
         </div>
 
@@ -1416,53 +1479,73 @@
         <div class="about-col-right">
           <div class="about-card p-8 shadow-sm about-tilt" id="aboutCard">
 
-            <div class="flex items-center gap-4 mb-6">
-              <button class="sprout" id="sprout" type="button" title="water me">
-                <span class="sprout-emoji" id="sproutEmoji">🌱</span>
-                <span class="sprout-ring"></span>
+            <div class="profile-head">
+              <button class="sprout" id="sprout" type="button" title="open to roles — grow me" aria-label="Sprout. Stage: open to roles. Click to grow.">
+                <span class="sprout-emoji" id="sproutEmoji" aria-hidden="true">🌱</span>
+                <span class="sprout-ring" aria-hidden="true"></span>
               </button>
-              <div>
+              <div class="profile-id">
                 <div class="font-semibold">Harsha Dhore</div>
-                <div class="text-sm text-[#665C5C]" id="sproutSub">Behavioural Designer &middot; MDes Student, IIT Delhi</div>
+                <div class="profile-sub" id="sproutSub">Product &amp; Behavioural Designer &middot; IIT Delhi M.Des</div>
               </div>
-              <span class="growth-pill ml-auto" id="growthPill">seedling</span>
+              <span class="growth-pill" id="growthPill" aria-live="polite">open to roles</span>
             </div>
 
             <div class="grid grid-cols-2 gap-3 text-sm skill-grid" id="skillGrid">
-              <button type="button" class="skill" data-key="belief"
-                      data-detail="Design that only works for confident, literate, well-connected users is unfinished design. I start from the edges of the user base &mdash; low literacy, low bandwidth, low trust &mdash; because solutions that hold there hold everywhere."
-                      data-foot="What I design for">
+              <button type="button" class="skill" data-key="belief" aria-expanded="false" aria-controls="skillDrawer"
+                      data-template="skill-belief" data-foot="What I design for">
                 <i class="fas fa-compass"></i>
                 <span>What I believe</span>
                 <i class="fas fa-plus skill-plus"></i>
               </button>
-              <button type="button" class="skill" data-key="background"
-                      data-detail="MDes candidate at IIT Delhi, admitted through CEED with an All India Rank of 69. Before that, a BFA in Applied Arts &mdash; a visual communication foundation that still shapes how I approach interface and information design."
-                      data-foot="MDes IIT Delhi &middot; CEED AIR 69 &middot; BFA Applied Arts">
+              <button type="button" class="skill" data-key="background" aria-expanded="false" aria-controls="skillDrawer"
+                      data-template="skill-background" data-foot="IIT Delhi &middot; CEED AIR 69 &middot; BFA Applied Arts">
                 <i class="fas fa-graduation-cap"></i>
                 <span>Background</span>
                 <i class="fas fa-plus skill-plus"></i>
               </button>
-              <button type="button" class="skill" data-key="path"
-                      data-detail="I came to design through fine arts, where the training is observation before interpretation. Moving into design research kept that discipline and gave it a method: the same close attention, applied to how people navigate systems that were not built with them in mind."
-                      data-foot="Fine arts to design research">
-                <i class="fas fa-route"></i>
-                <span>How I got here</span>
-                <i class="fas fa-plus skill-plus"></i>
-              </button>
-              <button type="button" class="skill" data-key="process"
-                      data-detail="Extended field research and contextual inquiry first, then behavioural analysis using COM-B and the Behaviour Change Wheel, then design and usability testing with the same users. I document assumptions early so they can be disproved before they become features."
-                      data-foot="Research &rarr; framework &rarr; design &rarr; test">
+              <button type="button" class="skill" data-key="process" aria-expanded="false" aria-controls="skillDrawer"
+                      data-template="skill-process" data-foot="Research &rarr; diagnosis &rarr; design &rarr; test">
                 <i class="fas fa-diagram-project"></i>
                 <span>How I work</span>
                 <i class="fas fa-plus skill-plus"></i>
               </button>
+              <button type="button" class="skill" data-key="path" aria-expanded="false" aria-controls="skillDrawer"
+                      data-template="skill-path" data-foot="Fine arts &rarr; industry &rarr; behavioural design">
+                <i class="fas fa-route"></i>
+                <span>How I got here</span>
+                <i class="fas fa-plus skill-plus"></i>
+              </button>
             </div>
+
+            <!-- tab copy lives in templates so the drawer can hold lists and emphasis -->
+            <template id="skill-belief">
+              <p>Design that only works for confident, high-bandwidth users is unfinished design. I design from the edges, low digital literacy, high financial stakes and low trust, because systems that build confidence there hold everywhere.</p>
+              <p class="skill-focus"><span>Focus</span> complex FinTech workflows &middot; proactive CX &amp; anxiety reduction &middot; cognitive friction &amp; conversion.</p>
+            </template>
+            <template id="skill-background">
+              <ul class="skill-list">
+                <li><strong>M.Des, IIT Delhi</strong>, 9.13 CGPA, Dept. Rank 6 &middot; CEED AIR 69. Behavioural UX, systems design, human factors.</li>
+                <li><strong>Pagariya Consumer Foods</strong>, ~2 yrs as sole designer, leading brand, packaging and digital launch of Pagariya Mart; 36% digital revenue contribution.</li>
+                <li><strong>BFA in Applied Arts</strong>, grounding in visual hierarchy, typography and design systems.</li>
+              </ul>
+            </template>
+            <template id="skill-process">
+              <ol class="skill-list">
+                <li><strong>Contextual inquiry</strong>, observing real behaviour, workarounds and unspoken anxieties in the field rather than self-reported answers.</li>
+                <li><strong>Behavioural diagnosis</strong> with COM-B and Fogg, to locate friction in capability, opportunity or motivation.</li>
+                <li><strong>Execution and stress-testing</strong>, prototyping in Figma, building component libraries and testing before handoff.</li>
+              </ol>
+            </template>
+            <template id="skill-path">
+              <p>Fine arts taught me to observe before interpreting. In industry, launching a brand and a retail product as sole designer, I learned that even the best craft fails when the underlying journey creates hesitation.</p>
+              <p>That move to IIT Delhi let me merge visual execution with cognitive science: designing high-stakes systems, from microfinance for rural self-help groups to low-anxiety on-demand flows.</p>
+            </template>
 
             <!-- expanding detail drawer -->
             <div class="skill-drawer" id="skillDrawer">
               <div class="skill-drawer-in">
-                <p id="skillText"></p>
+                <div id="skillText" class="mb-3"></div>
                 <div class="skill-rule"><span id="skillBar"></span></div>
                 <div class="skill-metric"><i class="fas fa-arrow-turn-up fa-rotate-90"></i><span id="skillLabel"></span></div>
               </div>
@@ -2411,25 +2494,49 @@
       if (!wrap) return;
       const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-      /* --- 1. Margin notes on "say" / "actually do" --- */
+      /* --- 1. Margin notes on "say" / "actually do" / "business metrics demand" --- */
       const note = document.createElement('div');
       note.className = 'margin-note';
+      note.id = 'aboutNote';
+      note.setAttribute('role', 'tooltip');
       document.body.appendChild(note);
 
-      wrap.querySelectorAll('.say-word, .do-word').forEach(w => {
-        const show = (e) => {
-          note.innerHTML = '<b>' + w.dataset.tag + '</b>' + w.dataset.note;
+      const label = document.createElement('b');
+      const copy = document.createElement('span');
+
+      wrap.querySelectorAll('.say-word, .do-word, .measure-word').forEach(w => {
+        const place = (x, y) => {
+          note.style.left = Math.max(12, Math.min(x, window.innerWidth - 284)) + 'px';
+          note.style.top = Math.max(12, Math.min(y, window.innerHeight - 160)) + 'px';
+        };
+        const setContent = () => {
+          label.textContent = w.dataset.tag || '';
+          copy.textContent = w.dataset.note || '';
+          note.replaceChildren(label, copy);
+        };
+        const showAt = (e) => {
+          setContent();
           note.classList.add('on');
-          move(e);
+          place(e.clientX + 16, e.clientY + 18);
         };
-        const move = (e) => {
-          const x = Math.min(e.clientX + 16, window.innerWidth - 270);
-          note.style.left = x + 'px';
-          note.style.top = (e.clientY + 18) + 'px';
+        const showAtWord = () => {
+          setContent();
+          note.classList.add('on');
+          const pos = () => {
+            const r = w.getBoundingClientRect();
+            place(r.left, r.bottom + 12);
+          };
+          pos();
+          // the browser scrolls the newly focused word into view after this event
+          requestAnimationFrame(pos);
         };
-        w.addEventListener('mouseenter', show);
-        w.addEventListener('mousemove', move);
-        w.addEventListener('mouseleave', () => note.classList.remove('on'));
+        const hide = () => note.classList.remove('on');
+
+        w.addEventListener('mouseenter', showAt);
+        w.addEventListener('mousemove', (e) => place(e.clientX + 16, e.clientY + 18));
+        w.addEventListener('mouseleave', hide);
+        w.addEventListener('focus', showAtWord);
+        w.addEventListener('blur', hide);
       });
 
       /* --- 2. Rubber-stamp eyebrow (flips journal page number) --- */
@@ -2437,13 +2544,19 @@
       const page = document.getElementById('stampPage');
       let pg = 3;
       if (stamp) {
-        stamp.addEventListener('click', () => {
+        const stampHit = () => {
           pg = pg >= 12 ? 1 : pg + 1;
           page.textContent = 'pg ' + String(pg).padStart(2, '0');
           stamp.classList.remove('stamped');
           void stamp.offsetWidth;
           stamp.classList.add('stamped');
           setTimeout(() => stamp.classList.remove('stamped'), 900);
+        };
+        stamp.addEventListener('click', stampHit);
+        stamp.addEventListener('keydown', (e) => {
+          if (e.key !== 'Enter' && e.key !== ' ') return;
+          e.preventDefault();
+          stampHit();
         });
       }
 
@@ -2512,15 +2625,17 @@
         const emoji = document.getElementById('sproutEmoji');
         const pill = document.getElementById('growthPill');
         const stages = [
-          { e: '🌱', n: 'learning' }, { e: '🌿', n: 'practising' },
-          { e: '🪴', n: 'building' },  { e: '🌳', n: 'refining' },
-          { e: '🌸', n: 'sharing' }
+          { e: '🌱', n: 'open to roles' },    { e: '🌿', n: 'product & ux' },
+          { e: '🪴', n: 'behaviour design' }, { e: '🌳', n: 'design research' },
+          { e: '🌸', n: 'IIT Delhi M.Des' }
         ];
         let s = 0;
         sprout.addEventListener('click', () => {
           s = (s + 1) % stages.length;
           emoji.textContent = stages[s].e;
           pill.textContent = stages[s].n;
+          sprout.title = stages[s].n + ' — grow me';
+          sprout.setAttribute('aria-label', 'Sprout. Stage: ' + stages[s].n + '. Click to grow.');
           sprout.classList.remove('grow'); void sprout.offsetWidth; sprout.classList.add('grow');
           if (reduce) return;
           // little leaf burst
@@ -2547,29 +2662,53 @@
       const drawer = document.getElementById('skillDrawer');
       if (grid && drawer) {
         const txt = document.getElementById('skillText');
+        const innerBox = drawer.querySelector('.skill-drawer-in');
         const bar = document.getElementById('skillBar');
         const lbl = document.getElementById('skillLabel');
+        const buttons = Array.from(grid.querySelectorAll('.skill'));
         let openKey = null;
 
-        grid.querySelectorAll('.skill').forEach(btn => {
+        drawer.style.maxHeight = '0px';
+
+        /* the drawer grows to the copy it holds, however long that copy is */
+        const sizeDrawer = () => {
+          if (!innerBox || !drawer.classList.contains('open')) return;
+          drawer.style.maxHeight = Math.ceil(innerBox.getBoundingClientRect().height) + 'px';
+        };
+        const setExpanded = (btn, on) => btn.setAttribute('aria-expanded', on ? 'true' : 'false');
+
+        buttons.forEach(btn => {
           btn.addEventListener('click', () => {
             const key = btn.dataset.key;
             if (openKey === key) {
               drawer.classList.remove('open');
+              drawer.style.maxHeight = '0px';
               btn.classList.remove('active');
+              setExpanded(btn, false);
               openKey = null;
               return;
             }
-            grid.querySelectorAll('.skill').forEach(b => b.classList.remove('active'));
+            buttons.forEach(b => {
+              b.classList.remove('active');
+              setExpanded(b, false);
+            });
             btn.classList.add('active');
+            setExpanded(btn, true);
             openKey = key;
-            txt.textContent = btn.dataset.detail;
-            lbl.innerHTML = btn.dataset.foot || '';
+
+            const tpl = document.getElementById(btn.dataset.template);
+            txt.replaceChildren(tpl ? tpl.content.cloneNode(true) : document.createTextNode(''));
+            lbl.textContent = btn.dataset.foot || '';
             drawer.classList.add('open');
+            sizeDrawer();
             bar.style.width = '0%';
             requestAnimationFrame(() => { bar.style.width = '100%'; });
           });
         });
+
+        window.addEventListener('resize', sizeDrawer);
+        if ('ResizeObserver' in window) new ResizeObserver(sizeDrawer).observe(innerBox);
+        document.fonts && document.fonts.ready.then(sizeDrawer);
       }
 
       /* --- 6. 3D tilt on the profile card --- */
