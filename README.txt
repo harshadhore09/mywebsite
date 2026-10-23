@@ -32,6 +32,17 @@ node tools/micro-interactions/test.js
 ## Project opening transition
 All three case studies share a warm, full-screen title curtain. Normal project clicks raise it before navigation; the destination briefly shows its title and slides the curtain upward to reveal the screen. It also runs on direct case-study visits. Reduced-motion preferences skip the animation, modified/new-tab clicks retain native behavior, and back/forward restores clear the curtain. No dependencies or build step are required.
 
+## About section
+The About panel is an interactive field journal, and all of its copy lives in `index.html` — no build step.
+
+- The headline names three positions — what users *say*, what they *actually do*, and what *business metrics demand* — each with a hover/focus tooltip (the three tags are stored as `data-tag` / `data-note` on the `<span>`s). The green third accent is `.measure-word`.
+- The drag-to-compare box starts fully on *stated behaviour*; dragging, tapping or the arrow keys wipe *observed behaviour* across it. The auto-nudge first sweeps it open and closes again so the gesture is obvious.
+- The four profile tabs are `<template>` blocks (`#skill-belief`, `#skill-background`, `#skill-process`, `#skill-path`), so a tab can hold paragraphs, a bulleted list or an ordered list. The drawer measures its own content, so longer copy is never clipped. Tabs expose `aria-expanded` and keep focus on the clicked chip.
+- The sprout cycles 🌱 → 🌿 → 🪴 → 🌳 → 🌸 and its badge with it (open to roles → product & ux → behaviour design → design research → IIT Delhi M.Des), then loops. The badge starts on *open to roles*.
+- Everything above is keyboard reachable, and the stamp, tooltips and drawer respect reduced motion.
+
+To change the wording, edit the markup and the four templates directly; utility classes are only used if they already exist in `assets/tailwind.css`, so new type sizes belong in the inline `<style>` block.
+
 ## Micro-interactions and custom cursors
 One common package — copied from Pragati / Mahila Bachat Gat and kept identical across all three case studies — lives in a single shared pair of files: `scripts/micro-interactions.js` and `assets/micro-interactions.css`. A page opts in with `<html data-project="mbg|food|medical">`; everything decorative is `aria-hidden`, `pointer-events:none`, and hidden in print.
 
