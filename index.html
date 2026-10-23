@@ -238,17 +238,24 @@
       transition: background-size .5s cubic-bezier(.22,1,.36,1), color .3s ease;
     }
 
-    /* --- Chips --- */
+    /* --- Chips: all three badges sit on one line --- */
+    .hero-tags {
+      flex-wrap: nowrap;      /* override .flex-wrap so the row never breaks */
+      gap: 8px;
+      max-width: 100%;
+    }
     .hero-tags .chip {
       position: relative;
       display: inline-grid;
       align-items: center;
       justify-items: center;
-      padding: 7px 18px;
+      flex: 0 0 auto;         /* pills size to their own text, never stretch */
+      padding: 7px 13px;
       border-radius: 9999px;
       background: #F9E8C3;
       color: #3F2A1F;
-      font-size: .875rem;
+      font-size: .8125rem;    /* 13px keeps the 3-up row inside the 520px column */
+      letter-spacing: -.005em;
       font-weight: 500;
       border: 1px solid transparent;
       overflow: hidden;
@@ -277,6 +284,23 @@
     .hero-tags .chip:hover span { transform: translateY(-115%); opacity: 0; }
     .hero-tags .chip:hover::after { transform: translateY(0); opacity: 1; }
     .hero-tags .chip:active { transform: scale(.95) !important; }
+
+    @media (max-width: 768px) {
+      .hero-tags { gap: 7px; }
+      .hero-tags .chip { padding: 6px 11px; font-size: .75rem; }
+    }
+    /* lg row layout squeezes the copy column: shrink, then fold only if truly needed */
+    @media (min-width: 1024px) and (max-width: 1130px) {
+      .hero-tags { gap: 7px; }
+      .hero-tags .chip { padding: 6px 10px; font-size: .75rem; }
+    }
+    @media (min-width: 1024px) and (max-width: 1085px) {
+      .hero-tags { flex-wrap: wrap; }
+    }
+    /* below this the three pills genuinely can't share a line, let them stack */
+    @media (max-width: 480px) {
+      .hero-tags { flex-wrap: wrap; }
+    }
 
     /* --- CTA buttons --- */
     .hbtn {
