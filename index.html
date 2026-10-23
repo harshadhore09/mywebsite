@@ -734,15 +734,24 @@
       border-radius: 16px; overflow: hidden;
       background: #F4EFE3; border: 1px solid #E5DCC9;
       box-shadow: inset 0 1px 0 rgba(255,255,255,.7);
-      height: 132px;
+      min-height: 132px;
       cursor: ew-resize; touch-action: none;
+    }
+
+    /* base + reveal layers share identical padding, alignment and typography */
+    .gap-said,
+    .gap-did-inner {
+      display: flex; flex-direction: column; justify-content: flex-start; gap: 7px;
+      padding: 29.5px 20px;
+    }
+    @media (max-width: 640px) {
+      .gap-said, .gap-did-inner { padding: 22px 18px; }
     }
 
     /* base layer: always full width, always fully readable */
     .gap-said {
-      position: absolute; inset: 0;
-      display: flex; flex-direction: column; justify-content: center; gap: 7px;
-      padding: 16px 20px;
+      position: relative;
+      width: 100%;
     }
 
     /* reveal layer: clipped from the left, its text stays at full box width */
@@ -754,19 +763,18 @@
       z-index: 2;
     }
     .gap-did-inner {
-      position: absolute; top: 0; bottom: 0; left: 0;
-      display: flex; flex-direction: column; justify-content: center; gap: 7px;
-      padding: 16px 20px;
+      position: absolute; top: 0; left: 0;
       width: var(--boxw, 100%);        /* full box width, so text never reflows */
     }
     .gapbox-inner:not(.dragging) .gap-did { transition: width .45s cubic-bezier(.22,1,.36,1); }
 
-    .gap-layer p, .gap-did-inner p {
-      font-size: 12.8px; line-height: 1.45; color: #4A3F3A; margin: 0;
-      max-width: 46ch;
+    .gap-said p, .gap-did-inner p {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      font-size: 1rem; font-weight: 400; line-height: 1.5; color: #2B2228; margin: 0;
     }
     .gap-label {
-      font-size: 10.5px; letter-spacing: .12em; text-transform: uppercase; font-weight: 600;
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      font-size: 10.5px; line-height: 1.5; letter-spacing: .12em; text-transform: uppercase; font-weight: 600;
       display: inline-flex; align-items: center; gap: 6px; white-space: nowrap;
     }
     .gap-said .gap-label { color: #9B7C55; }
@@ -2564,12 +2572,19 @@
       const box = document.getElementById('gapBox');
       if (box) {
         const inner  = box.querySelector('.gapbox-inner');
+        const said   = document.getElementById('gapSaid');
         const did    = document.getElementById('gapDid');
         const didIn  = did.querySelector('.gap-did-inner');
         const handle = document.getElementById('gapHandle');
         let dragging = false, pct = 0;
 
-        function syncWidth() { didIn.style.width = inner.clientWidth + 'px'; }
+        function syncWidth() {
+          const w = inner.clientWidth;
+          didIn.style.width = w + 'px';
+          const h = Math.max(132, (said ? said.offsetHeight : 0) + 2, didIn.offsetHeight + 2);
+          const minH = h + 'px';
+          if (inner.style.minHeight !== minH) inner.style.minHeight = minH;
+        }
         function setPos(v) {
           pct = Math.max(0, Math.min(100, v));
           did.style.width = pct + '%';
@@ -2585,7 +2600,7 @@
         syncWidth();
         setPos(0);                       // start closed: "stated" reads in full
         window.addEventListener('resize', () => { syncWidth(); setPos(pct); });
-        if ('ResizeObserver' in window) new ResizeObserver(() => { syncWidth(); setPos(pct); }).observe(inner);
+        if ('ResizeObserver' in window) new ResizeObserver(() => { syncWidth(); setPos(pct); }).observe(box);
         document.fonts && document.fonts.ready.then(syncWidth);
 
         inner.addEventListener('pointerdown', (e) => {
