@@ -256,7 +256,7 @@
 
     .slides {
       display: grid;
-      gap: clamp(28px, 5vw, 76px);
+      gap: 0;
       max-width: var(--max);
       margin: 0 auto;
       padding: 0 clamp(12px, 3.5vw, 54px) clamp(82px, 10vw, 160px);
@@ -269,10 +269,10 @@
     }
     .slide-frame {
       overflow: hidden;
-      background: #090909;
-      border: 1px solid rgba(23,23,20,.1);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
+      background: transparent;
+      border: 0;
+      border-radius: 0;
+      box-shadow: none;
     }
     .slide-frame > svg,
     .slide-frame > .slide-art,
