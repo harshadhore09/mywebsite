@@ -9,7 +9,8 @@
 - `assets/` and `images/`, optimized WebP artwork and the precompiled Tailwind stylesheet
 - `scripts/lazy-slides.js`, shared progressive artwork loader
 - `scripts/project-transition.js` and `assets/project-transition.css`, shared project-opening curtain
-- `resume/Harsha_Dhore.pdf`, current CV (linked from the homepage)
+- `resume/Harsha_Dhore_CV_2026.pdf`, current CV linked from both homepage buttons (versioned filename avoids stale PDF caches)
+- `resume/Harsha_Dhore.pdf`, same CV retained for existing direct links
 - `resume/Harsha_Dhore.tex`, editable LaTeX source for the CV
 
 ## Performance work
@@ -75,5 +76,5 @@ Official guide: https://docs.github.com/en/pages/getting-started-with-github-pag
 
 ## Important notes
 - Google Fonts and Font Awesome are still external dependencies and need internet access.
-- Both homepage Download CV links serve `resume/Harsha_Dhore.pdf`. If the CV changes, replace this PDF and update `resume/Harsha_Dhore.tex` as appropriate.
+- Both homepage Download CV links serve `resume/Harsha_Dhore_CV_2026.pdf`; the versioned URL prevents browsers from reusing an older cached CV. If the CV changes, publish it under a new filename, update both links, keep `resume/Harsha_Dhore.pdf` current for existing links, and update `resume/Harsha_Dhore.tex` as appropriate.
 - Preview all four pages after deployment, especially on mobile and when printing a case study.
