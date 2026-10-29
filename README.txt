@@ -9,7 +9,8 @@
 - `assets/` and `images/`, optimized WebP artwork and the precompiled Tailwind stylesheet
 - `scripts/lazy-slides.js`, shared progressive artwork loader
 - `scripts/project-transition.js` and `assets/project-transition.css`, shared project-opening curtain
-- `resume/Harsha_Dhore.pdf`, temporary explanatory PDF, not a real resume
+- `resume/Harsha_Dhore.pdf`, current CV (linked from the homepage)
+- `resume/Harsha_Dhore.tex`, editable LaTeX source for the CV
 
 ## Performance work
 The site is about 86 MB unpacked. Case-study HTML is now approximately 96–190 KB per page instead of 15–31 MB. Each cover remains inline for immediate display; subsequent slides keep their original vector artwork, but load only within about 2,400 px of the viewport. Slides more than about 4,800 px away are released so long case studies do not keep every SVG in the live page at once. Reserved slide ratios prevent layout jumps, and slide navigation starts the target artwork request before scrolling.
@@ -74,5 +75,5 @@ Official guide: https://docs.github.com/en/pages/getting-started-with-github-pag
 
 ## Important notes
 - Google Fonts and Font Awesome are still external dependencies and need internet access.
-- The original portfolio links to `resume/Harsha_Dhore.pdf`, but no real CV was supplied. The current PDF is an explanatory notice; replace it before publishing.
+- Both homepage Download CV links serve `resume/Harsha_Dhore.pdf`. If the CV changes, replace this PDF and update `resume/Harsha_Dhore.tex` as appropriate.
 - Preview all four pages after deployment, especially on mobile and when printing a case study.
