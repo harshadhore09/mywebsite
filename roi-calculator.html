@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <meta name="theme-color" content="#11110f"/>
+  <meta name="theme-color" content="#1d5749"/>
   <meta name="description" content="Interactive ROI calculator for Food Delivery Waiting Anxiety, estimate retention, frequency and support impact."/>
   <title>ROI Calculator · Food Delivery Waiting Anxiety · Harsha Dhore</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -15,7 +15,7 @@
     body{margin:0;color:var(--ink);background:var(--paper);font-family:'Inter',system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased}
     a{color:inherit}
     /* reuse header */
-    .site-header{position:sticky;top:0;z-index:20;display:flex;align-items:center;justify-content:space-between;gap:16px;width:100%;min-height:72px;padding:14px clamp(18px,4vw,64px);font:500 14px/1 'Inter',sans-serif;color:#f8f6f1;background:rgba(17,17,15,.94);border-bottom:1px solid rgba(255,255,255,.08);backdrop-filter:blur(16px)}
+    .site-header{position:sticky;top:0;z-index:20;display:flex;align-items:center;justify-content:space-between;gap:16px;width:100%;min-height:72px;padding:14px clamp(18px,4vw,64px);font:500 14px/1 'Inter',sans-serif;color:#f8f6f1;background:var(--accent-dark);border-bottom:1px solid rgba(255,255,255,.08);backdrop-filter:blur(16px)}
     .pnav-left{display:flex;align-items:center;gap:14px}
     .pnav-back{flex:none;display:inline-flex;align-items:center;gap:8px;padding:5px 15px 5px 5px;color:#f8f6f1;text-decoration:none;font-size:13px;font-weight:700;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.2);border-radius:999px}
     .pnav-back-ic{display:grid;place-items:center;width:28px;height:28px;border-radius:50%;color:#11110f;background:#cce8b8}
@@ -31,7 +31,7 @@
     .pnav-links>a{padding:9px 12px;color:rgba(248,246,241,.72);text-decoration:none;font-size:14px;font-weight:600;border-radius:999px}
     .pnav-links>a:hover{color:#f8f6f1;background:rgba(255,255,255,.08)}
     .pnav-links>a.pnav-cta{margin-left:6px;padding:11px 18px;color:#11110f;background:#cce8b8;font-size:13px;font-weight:700}
-    @media(max-width:700px){.pnav-links{display:none}.brand-name{font-size:14px}}
+    @media(max-width:700px){.pnav-links{display:none}.pnav-back{padding:5px}.pnav-back-tx,.brand-kick-x{display:none}.brand-name{font-size:14px}}
 
     .wrap{max-width:var(--max);margin:0 auto;padding:0 clamp(18px,4vw,40px)}
     .intro{padding: clamp(28px,5vw,56px) 0 18px}
@@ -96,11 +96,11 @@
 <body id="top">
   <header class="site-header">
     <div class="pnav-left">
-      <a class="pnav-back" href="StrategicUX_index.html#slide-13"><span class="pnav-back-ic"><svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M13 8H3m0 0 4.5-4.5M3 8l4.5 4.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Back to case study</a>
+      <a class="pnav-back" href="StrategicUX_index.html#slide-13" aria-label="Back to case study"><span class="pnav-back-ic"><svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M13 8H3m0 0 4.5-4.5M3 8l4.5 4.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="pnav-back-tx">Back to case study</span></a>
       <span class="pnav-sep" aria-hidden="true"></span>
       <a class="brand" href="StrategicUX_index.html">
         <span class="brand-mark">FD</span>
-        <span class="brand-tx"><span class="brand-kicker">Case Study 02 · Strategic UX</span><span class="brand-name">ROI Calculator</span></span>
+        <span class="brand-tx"><span class="brand-kicker">Case Study 02<span class="brand-kick-x"> · Strategic UX</span></span><span class="brand-name">ROI Calculator</span></span>
       </a>
     </div>
     <div class="pnav-right"><nav class="pnav-links"><a href="index.html#work">Work</a><a href="StrategicUX_index.html">Case study</a><a class="pnav-cta" href="StrategicUX_index.html#slide-13">View slide 13</a></nav></div>
