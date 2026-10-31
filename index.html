@@ -106,48 +106,48 @@
       transform: translate(-50%, -50%) scale(0.3);
     }
 
-    /* === MOUSE REACTIVE BACKGROUND === */
-    .bg-canvas {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 0;
+    /* === LIVING TOPOGRAPHY — hero background === */
+    /* Sits inside the hero, behind every piece of content. Never receives input. */
+    .hero-atmosphere {
+      position: absolute;
+      inset: 0;
+      z-index: 2;
       pointer-events: none;
-      opacity: 0.9;
+      overflow: hidden;
+      contain: layout paint;
     }
 
-    .spotlight {
-      position: fixed;
-      top: 0;
-      left: 0;
+    .topo-canvas {
+      position: absolute;
+      inset: 0;
+      display: block;
       width: 100%;
       height: 100%;
+      opacity: 0;
+      transition: opacity 1.8s ease;
+    }
+
+    .topo-canvas.is-ready {
+      opacity: 1;
+    }
+
+    /* Cream wash at the edges: keeps the field airy and copy crisp. */
+    .hero-atmosphere::after {
+      content: '';
+      position: absolute;
+      inset: 0;
       pointer-events: none;
-      z-index: 1;
-      background: radial-gradient(
-        circle 380px at var(--mouse-x, 50%) var(--mouse-y, 50%),
-        rgba(217, 182, 140, 0.14) 0%,
-        transparent 70%
+      background-image: radial-gradient(
+        118% 88% at 50% 44%,
+        rgba(248, 245, 239, 0) 40%,
+        rgba(248, 245, 239, 0.34) 82%,
+        rgba(248, 245, 239, 0.62) 100%
       );
-      transition: background 0.1s ease;
-      mix-blend-mode: multiply;
     }
 
-    .orb {
-      position: fixed;
-      border-radius: 50%;
-      filter: blur(55px);
-      pointer-events: none;
-      z-index: 1;
-      transition: transform 0.4s cubic-bezier(0.23, 1, 0.32, 1);
-      opacity: 0.22;
+    @media (prefers-reduced-motion: reduce) {
+      .topo-canvas { transition: none; }
     }
-
-    .orb-1 { background: #D9B68C; width: 420px; height: 420px; }
-    .orb-2 { background: #E8A9C3; width: 340px; height: 340px; }
-    .orb-3 { background: #C8B8E0; width: 280px; height: 280px; }
 
     /* HERO - Reference style (from image) */
     .hero-new {
@@ -1218,17 +1218,7 @@
 </head>
 <body class="paper-texture">
 <script src="./scripts/project-transition.js"></script>
-
-  <!-- MOUSE REACTIVE BACKGROUND -->
-  <canvas id="bg-canvas" class="bg-canvas"></canvas>
-  
-  <!-- Spotlight layer -->
-  <div id="spotlight" class="spotlight"></div>
-
-  <!-- Floating Orbs -->
-  <div id="orb1" class="orb orb-1" style="top: 12%; left: 8%;"></div>
-  <div id="orb2" class="orb orb-2" style="top: 58%; right: 9%;"></div>
-  <div id="orb3" class="orb orb-3" style="bottom: 14%; left: 18%;"></div>
+<script src="./scripts/hero-topography.js" defer></script>
 
   <!-- CUSTOM CURSOR -->
   <div id="cursor" class="custom-cursor"></div>
@@ -1236,6 +1226,11 @@
 
   <!-- HERO - Exact match to reference image -->
   <section class="hero-new relative min-h-[100svh] flex flex-col pt-6 pb-12 overflow-hidden" style="background: #F8F5EF;">
+    <!-- LIVING TOPOGRAPHY · decorative, non-interactive, aria-hidden -->
+    <div class="hero-atmosphere" aria-hidden="true">
+      <canvas class="topo-canvas" data-topography></canvas>
+    </div>
+
     <!-- Top pill nav bar (from reference) -->
     <div class="max-w-6xl mx-auto w-full px-6 mb-8 z-30">
       <div class="flex items-center justify-between bg-[#F9E8C3] rounded-full px-2 py-2 shadow-sm border border-[#F0D9A3]">
@@ -1856,154 +1851,6 @@
       }, { passive: true, once: true });
     }
 
-    // === STRONG MOUSE-REACTIVE BACKGROUND ===
-    let mouseX = window.innerWidth / 2;
-    let mouseY = window.innerHeight / 2;
-
-    function initMouseBackground() {
-      const spotlight = document.getElementById('spotlight');
-      const canvas = document.getElementById('bg-canvas');
-      const ctx = canvas.getContext('2d', { alpha: true });
-      
-      // Resize canvas
-      function resizeCanvas() {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-      }
-      window.addEventListener('resize', resizeCanvas);
-      resizeCanvas();
-
-      // Orbs
-      const orb1 = document.getElementById('orb1');
-      const orb2 = document.getElementById('orb2');
-      const orb3 = document.getElementById('orb3');
-
-      // Particles for canvas
-      let particles = [];
-      
-      function createParticle(x, y) {
-        return {
-          x: x,
-          y: y,
-          size: Math.random() * 3.2 + 1.1,
-          speedX: (Math.random() - 0.5) * 1.2,
-          speedY: (Math.random() - 0.5) * 1.2,
-          life: Math.random() * 55 + 42,
-          color: ['#D9B68C', '#E8A9C3', '#C8B8E0'][Math.floor(Math.random() * 3)]
-        };
-      }
-
-      // Coalesce high-frequency pointer events to one visual update per frame.
-      let pendingPointer = null;
-      let pointerFrame = 0;
-      function applyPointer() {
-        pointerFrame = 0;
-        if (!pendingPointer) return;
-        const { x, y } = pendingPointer;
-        pendingPointer = null;
-
-        spotlight.style.setProperty('--mouse-x', `${x}px`);
-        spotlight.style.setProperty('--mouse-y', `${y}px`);
-        if (particles.length < 42 && Math.random() < 0.6) {
-          particles.push(createParticle(x, y));
-        }
-
-        const dx1 = (x - window.innerWidth * 0.15) * 0.022;
-        const dy1 = (y - window.innerHeight * 0.18) * 0.022;
-        const dx2 = (x - window.innerWidth * 0.78) * 0.018;
-        const dy2 = (y - window.innerHeight * 0.62) * 0.018;
-        const dx3 = (x - window.innerWidth * 0.32) * 0.027;
-        const dy3 = (y - window.innerHeight * 0.82) * 0.027;
-
-        orb1.style.transform = `translate(${dx1}px, ${dy1}px)`;
-        orb2.style.transform = `translate(${dx2}px, ${dy2}px)`;
-        orb3.style.transform = `translate(${dx3}px, ${dy3}px)`;
-      }
-      document.addEventListener('mousemove', (e) => {
-        pendingPointer = { x: e.clientX, y: e.clientY };
-        if (!pointerFrame) pointerFrame = requestAnimationFrame(applyPointer);
-      }, { passive: true });
-
-      // Canvas particles move slowly, so 30fps is visually identical while
-      // halving full-viewport canvas work. Pause altogether for hidden tabs.
-      let lastParticleFrame = 0;
-      let particleFrame = 0;
-      function drawParticles(now) {
-        particleFrame = 0;
-        if (document.hidden) return;
-        if (lastParticleFrame && now - lastParticleFrame < 1000 / 30) {
-          particleFrame = requestAnimationFrame(drawParticles);
-          return;
-        }
-        const elapsed = lastParticleFrame ? Math.min(3, (now - lastParticleFrame) / 16.667) : 1;
-        lastParticleFrame = now;
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-        for (let i = particles.length - 1; i >= 0; i--) {
-          const p = particles[i];
-          p.x += p.speedX * elapsed;
-          p.y += p.speedY * elapsed;
-          p.life -= 1.2 * elapsed;
-          p.size *= Math.pow(0.985, elapsed);
-
-          if (p.life <= 0 || p.size < 0.3) {
-            particles.splice(i, 1);
-            continue;
-          }
-
-          ctx.save();
-          ctx.globalAlpha = Math.max(0, p.life / 60);
-          ctx.fillStyle = p.color;
-          ctx.beginPath();
-          ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-          ctx.fill();
-          ctx.restore();
-        }
-
-        // Keep the same ambient rate despite the lower draw frequency.
-        if (Math.random() < 0.12 * elapsed && particles.length < 42) {
-          particles.push(createParticle(
-            Math.random() * canvas.width,
-            Math.random() * canvas.height * 0.95
-          ));
-        }
-
-        particleFrame = requestAnimationFrame(drawParticles);
-      }
-      function startParticles() {
-        if (!particleFrame && !document.hidden) particleFrame = requestAnimationFrame(drawParticles);
-      }
-      document.addEventListener('visibilitychange', () => {
-        if (document.hidden && particleFrame) {
-          cancelAnimationFrame(particleFrame);
-          particleFrame = 0;
-        } else {
-          startParticles();
-        }
-      });
-      startParticles();
-
-      // Gentle continuous orb movement
-      setInterval(() => {
-        if (document.hidden) return;
-        if (Math.random() < 0.35) {
-          const currentTransform1 = orb1.style.transform || 'translate(0px, 0px)';
-          orb1.style.transitionDuration = '2.1s';
-          orb1.style.transform = currentTransform1.replace(/translate\([^)]+\)/, '') + ' translate(1.5px, -3px)';
-          
-          setTimeout(() => {
-            if (orb1) orb1.style.transitionDuration = '0.4s';
-          }, 2100);
-        }
-      }, 6500);
-
-      // Initial spotlight position
-      setTimeout(() => {
-        spotlight.style.setProperty('--mouse-x', `${window.innerWidth * 0.5}px`);
-        spotlight.style.setProperty('--mouse-y', `${window.innerHeight * 0.35}px`);
-      }, 400);
-    }
-
     // === 3D CARD TILTS ===
     function initCardTilts() {
       const cards = document.querySelectorAll('.work-card, .tilt');
@@ -2372,28 +2219,15 @@
     function init() {
       initTailwind();
       initCustomCursor();
-      initMouseBackground();
+      // Hero "Living Topography" field lives in ./scripts/hero-topography.js
       initCardTilts();
       initStickers();
       initScrollEffects();
       initNavDock();
       initKeyboard();
 
-      // Gentle initial orb nudge
-      setTimeout(() => {
-        const orb1 = document.getElementById('orb1');
-        const orb2 = document.getElementById('orb2');
-        if (orb1) orb1.style.transform = 'translate(6px, -9px)';
-        if (orb2) orb2.style.transform = 'translate(-4px, 7px)';
-        
-        setTimeout(() => {
-          if (orb1) orb1.style.transform = 'translate(0px, 0px)';
-          if (orb2) orb2.style.transform = 'translate(0px, 0px)';
-        }, 1400);
-      }, 1500);
-
       // Welcome console
-      console.log('%c[Portfolio] Warm cream scrapbook portfolio ready with strong interactive background + cursor ✨', 'color:#C17A5F');
+      console.log('%c[Portfolio] Warm cream scrapbook portfolio ready — living topography + cursor ✨', 'color:#C17A5F');
       
       // Make sure stickers are above everything
       setTimeout(() => {
