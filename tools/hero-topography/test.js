@@ -97,21 +97,36 @@ async function main() {
   await sleep(400);
   assert.ok(live.paint.strokes > first, 'keeps drawing on requestAnimationFrame');
 
-  /* contours are closed loops: last point returns to the first, so nothing
-     visibly restarts at the seam */
-  const loops = contours(live.paint);
-  assert.ok(loops.length > 20, 'contour families are painted');
-  for (const loop of loops.slice(0, 12)) {
-    const a = loop.points[0];
-    const b = loop.points[loop.points.length - 1];
-    assert.ok(Math.hypot(a[0] - b[0], a[1] - b[1]) < 0.001, 'contour closes without a seam gap');
+  /* the field is a set of nested streamlines: long open curves that sweep
+     left to right, densely bunched, never a closed ring */
+  const curves = contours(live.paint);
+  assert.ok(curves.length > 20, 'line bundles are painted');
+
+  for (const curve of curves.slice(0, 12)) {
+    const pts = curve.points;
+    const start = pts[0];
+    const end = pts[pts.length - 1];
+    assert.ok(end[0] - start[0] > 100, 'each streamline runs across the frame');
+    assert.ok(Math.hypot(start[0] - end[0], start[1] - end[1]) > 100, 'curves are open, not closed rings');
+
+    // x must never run backwards: the bundle flows left to right
+    let monotonic = true;
+    for (let i = 1; i < pts.length; i += 1) if (pts[i][0] < pts[i - 1][0] - 0.6) monotonic = false;
+    assert.ok(monotonic, 'streamlines stay monotonic, so they never fold through themselves');
   }
 
-  /* strokes stay hairline, and the palette stays charcoal/terracotta */
-  for (const p of loops.slice(0, 24)) {
-    assert.ok(p.width <= 1, 'hairline strokes');
-    assert.match(p.style, /^rgba\((47, 42, 40|186, 114, 88),0\.\d+\)$/, 'muted charcoal or terracotta only');
+  /* strokes stay hairline, and the palette stays muted */
+  for (const curve of curves.slice(0, 24)) {
+    assert.ok(curve.width <= 1, 'hairline strokes');
+    assert.match(curve.style, /^rgba\((47, 42, 40|168, 127, 92|186, 114, 88),0\.\d+\)$/, 'charcoal, antique gold or terracotta only');
   }
+
+  /* the bundle is nested: consecutive streamlines sit close together */
+  const nested = curves.slice(0, 6).map((c) => c.points[10][1]);
+  assert.ok(new Set(nested.map((y) => Math.round(y))).size > 3, 'streamlines occupy distinct lanes');
+  const laneGaps = [];
+  for (let i = 1; i < nested.length; i += 1) laneGaps.push(Math.abs(nested[i] - nested[i - 1]));
+  assert.ok(Math.max(...laneGaps) < 120, 'lanes stay close enough to read as one ribbon');
 
   /* ---- 4. slow, continuous morphing (no jumps between frames) ------------- */
   const before = contours(live.paint).at(-1).points;
@@ -121,7 +136,7 @@ async function main() {
   for (let i = 0; i < Math.min(before.length, after.length); i += 1) {
     maxShift = Math.max(maxShift, Math.hypot(before[i][0] - after[i][0], before[i][1] - after[i][1]));
   }
-  assert.ok(maxShift > 0.05, 'contours are actually moving');
+  assert.ok(maxShift > 0.05, 'streamlines are actually moving');
   assert.ok(maxShift < 60, 'movement stays slow, no teleporting between frames');
 
   /* particles exist and never leave the hero */
