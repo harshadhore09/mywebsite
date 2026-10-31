@@ -7,6 +7,7 @@
 - `MedicalAdher_index.html`, Medical Adherence case study
 - `slides/`, standalone vector slide fragments, loaded as the reader approaches them
 - `assets/` and `images/`, optimized WebP artwork and the precompiled Tailwind stylesheet
+- `scripts/hero-topography.js`, the homepage hero's animated contour field
 - `scripts/lazy-slides.js`, shared progressive artwork loader
 - `scripts/project-transition.js` and `assets/project-transition.css`, shared project-opening curtain
 - `resume/Harsha_Dhore_CV_2026.pdf`, current CV linked from both homepage buttons (versioned filename avoids stale PDF caches)
@@ -29,6 +30,7 @@ node tools/lazy-slides/test.js
 node tools/slide-rail/test.js
 node tools/project-transition/test.js
 node tools/micro-interactions/test.js
+node tools/hero-topography/test.js
 ```
 
 ## Project opening transition
@@ -53,6 +55,15 @@ On every case study the cursor is a simple ring and dot, with no rupee symbol; h
 All three also share the same chrome-level touches: a light sweeps across the contact button on hover, nav pills and the back-to-top button lift on hover and settle on press, and text selection is tinted gold.
 
 The engine only runs for a fine pointer with motion allowed: touch readers, reduced-motion readers, and anyone whose browser never loads the file keep the native cursor, and switching the OS to reduced motion mid-visit retires the cursor immediately. The click bursts and glitter are capped and self-cleaning.
+
+## Hero background: Living Topography
+The homepage hero sits on a generative cartographic field (`scripts/hero-topography.js`, one `<canvas>` inside `div.hero-atmosphere`). Nothing else on the page changed: the layout, type, navigation, buttons and project sections are untouched, and the field is drawn inside the hero section rather than fixed over the document, so it never covers a case study or intercepts a click.
+
+- **Contours.** Three families of closed contour lines — one broad slope that runs off every edge of the hero, plus two small hills tucked into opposite corners — plus two or three open transect lines that drift across. A ring is a circle displaced by four harmonics (frequencies 2, 3, 5, 7) whose phase, amplitude and swell all advance at different speeds, so the shape keeps changing without ever repeating a beat. Because every ring is closed and every motion is a sine of elapsed time, the loop has no seam: measured drift is about 1 px/s.
+- **Particles.** Eight to twelve nodes, stratified across the hero, drift with a slow sine wobble. Nearby nodes join with hairline links, and the nearest node reaches for the cursor. Most nodes are muted terracotta, a few are charcoal.
+- **Palette and restraint.** Charcoal `rgba(47,42,40,0.17)` and terracotta `rgba(186,114,88,…)`, 0.6–0.95 px strokes, plus a cream radial wash over the layer so text keeps its contrast. Copy sits on `z-index` 20–30; the field is `z-index: 2` inside the hero and `pointer-events: none`.
+- **Interaction.** Pointer position is eased (not followed) into a 1–2 px parallax drift, a soft local dimple in the nearest contours, and a small reticle with links to nearby nodes. Touch devices get the composition without the cursor layer.
+- **Cost.** 30 fps draw budget on a device-pixel-ratio-capped backing store (max 2×), no shadows or blur filters, contours resampled only on resize. The loop parks when the tab is hidden or the hero scrolls out of view (`IntersectionObserver`), and `prefers-reduced-motion` replaces it with one settled still frame — including when the preference changes mid-visit.
 
 ## Hosting
 GitHub Pages is recommended for this static site. Keep the folder structure unchanged when deploying: the slide loader uses same-origin `fetch()`, so the pages need to be served over HTTP/HTTPS rather than opened directly with `file://`.
