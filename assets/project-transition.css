@@ -35,6 +35,16 @@
   transition: transform 650ms cubic-bezier(.76, 0, .24, 1);
 }
 .project-transition__content { width: min(100%, 740px); text-align: center; }
+.project-transition__preview {
+  width: min(60vw, 300px);
+  height: clamp(110px, 20vh, 180px);
+  margin: 0 auto 26px;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #e8e4d9;
+}
+.project-transition__preview img { width: 100%; height: 100%; object-fit: cover; display: block; }
+@media (max-height: 500px) { .project-transition__preview { display: none; } }
 .project-transition__eyebrow {
   margin: 0 0 22px;
   color: var(--transition-accent);

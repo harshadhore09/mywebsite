@@ -2,9 +2,9 @@
 (() => {
   'use strict';
   const projects = {
-    'MBG_index.html': { number: '01', title: 'Pragati, Mahila Bachat Gat', category: 'Behavioural Design', accent: '#c17a5f' },
-    'StrategicUX_index.html': { number: '02', title: 'Food Delivery: Waiting Anxiety', category: 'Strategic UX', accent: '#2b7a66' },
-    'MedicalAdher_index.html': { number: '03', title: 'Medical Adherence', category: 'Design Probe', accent: '#8972a5' },
+    'MBG_index.html': { number: '01', title: 'Pragati, Mahila Bachat Gat', category: 'Behavioural Design', accent: '#c17a5f', image: 'images/MBG.png' },
+    'StrategicUX_index.html': { number: '02', title: 'Food Delivery: Waiting Anxiety', category: 'Strategic UX', accent: '#2b7a66', image: 'images/Food_delivery.png' },
+    'MedicalAdher_index.html': { number: '03', title: 'Medical Adherence', category: 'Design Probe', accent: '#8972a5', image: 'images/Medical_adhrence.png' },
   };
   const motion = window.matchMedia('(prefers-reduced-motion: reduce)');
   const root = document.documentElement;
@@ -31,6 +31,13 @@
     curtain.setAttribute('aria-live', 'polite');
     const content = document.createElement('div');
     content.className = 'project-transition__content';
+    const preview = document.createElement('div');
+    preview.className = 'project-transition__preview';
+    const image = document.createElement('img');
+    image.src = project.image;
+    image.alt = ''; // Decorative; the project title is announced below.
+    preview.appendChild(image);
+    content.appendChild(preview);
     const parts = [
       ['p', 'eyebrow', `Case study / ${project.number}`],
       ['h2', 'title', project.title],
