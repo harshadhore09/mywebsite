@@ -145,6 +145,33 @@
       );
     }
 
+    /* A second, soft drift of paper behind the copy column. The lines stay
+       visible, but nothing dense ever sits under a paragraph. */
+    .hero-atmosphere::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 1;
+      background-image: linear-gradient(
+        100deg,
+        rgba(248, 245, 239, 0) 36%,
+        rgba(248, 245, 239, 0.4) 60%,
+        rgba(248, 245, 239, 0.58) 100%
+      );
+    }
+
+    @media (max-width: 1023px) {
+      .hero-atmosphere::before {
+        background-image: linear-gradient(
+          to bottom,
+          rgba(248, 245, 239, 0) 34%,
+          rgba(248, 245, 239, 0.22) 62%,
+          rgba(248, 245, 239, 0.36) 100%
+        );
+      }
+    }
+
     @media (prefers-reduced-motion: reduce) {
       .topo-canvas { transition: none; }
     }
