@@ -23,25 +23,40 @@ function contrast(a, b) {
 }
 
 const colours = {
-  cream: token('cream'), blue: token('earth-blue'), olive: token('earth-olive'),
-  stone: token('earth-stone'), taupe: token('earth-taupe'),
-  brown: token('earth-brown'), oliveInk: token('olive-ink'),
+  cream: token('cream'), oatmeal: token('oatmeal'), blue: token('blue-fantastic'),
+  flame: token('burning-flame'), truffle: token('truffle'), abyssal: token('abyssal'),
+  accentInk: token('accent-ink'), categoryBlue: token('category-blue'),
+  categoryOlive: token('category-olive'), categoryStone: token('category-stone'),
+  categoryBrown: token('category-brown'), categoryCream: token('category-cream'),
 };
 assert.deepEqual(colours, {
-  cream: '#F5EEDD', blue: '#94A5B3', olive: '#71713B', stone: '#E2DCD0',
-  taupe: '#8F7D6B', brown: '#3C1E06', oliveInk: '#5F5F30',
+  cream: '#EEE9DF', oatmeal: '#C9C1B1', blue: '#2C3B4D', flame: '#FFB162',
+  truffle: '#A35139', abyssal: '#1B2632', accentInk: '#81412F',
+  categoryBlue: '#94A5B3', categoryOlive: '#71713B', categoryStone: '#E2DCD0',
+  categoryBrown: '#3C1E06', categoryCream: '#F5EEDD',
 });
 for (const [foreground, background] of [
-  ['#FFFFFF', colours.olive], [colours.brown, colours.blue],
-  [colours.brown, colours.stone], [colours.oliveInk, colours.cream],
+  [colours.abyssal, colours.cream], [colours.abyssal, colours.flame],
+  [colours.blue, colours.oatmeal], ['#FFFFFF', colours.truffle],
+  [colours.accentInk, colours.cream], ['#FFFFFF', colours.categoryOlive],
+  [colours.categoryBrown, colours.categoryBlue],
+  [colours.categoryBrown, colours.categoryStone],
+  [colours.categoryCream, colours.categoryBrown],
 ]) assert.ok(contrast(foreground, background) >= 4.5, `${foreground} on ${background} meets 4.5:1`);
-assert.ok(contrast(colours.taupe, colours.cream) >= 3, 'large taupe heading meets 3:1');
 
 // jsdom cannot resolve CSS custom properties, so check the relevant selector
 // wiring here and exercise the actual toolkit state changes independently.
-assert.match(css, /\.tk-chip\[data-cat="behaviour"\]\.pinned\.weak-hit\s*\{\s*color:\s*var\(--earth-brown\)/);
-assert.match(css, /\.tk-cat\[data-cat="behaviour"\]\s*\{\s*background:\s*var\(--b\);\s*color:\s*var\(--earth-brown\)/);
-assert.match(css, /\.tk-chip\.pinned mark\s*\{\s*background:\s*var\(--earth-stone\);\s*color:\s*var\(--earth-brown\)/);
+assert.match(css, /\.tk-chip\[data-cat="behaviour"\]\.pinned\.weak-hit\s*\{\s*color:\s*var\(--category-brown\)/);
+assert.match(css, /\.tk-cat\[data-cat="behaviour"\]\s*\{\s*background:\s*var\(--b\);\s*color:\s*var\(--category-brown\)/);
+assert.match(css, /\.tk-chip\.pinned mark\s*\{\s*background:\s*var\(--category-stone\);\s*color:\s*var\(--category-brown\)/);
+assert.match(css, /\.hero-tags \.chip:nth-child\(1\)\s*\{\s*background:\s*var\(--category-blue\)/);
+assert.match(css, /\.work-card:nth-child\(2\) \.work-badge\s*\{\s*background:\s*var\(--category-olive\)/);
+assert.match(css, /\.tk\s*\{\s*--b:var\(--category-blue\);\s*--c:var\(--category-brown\);\s*--t:var\(--category-olive\)/);
+assert.match(css, /\.skill-grid \.skill\.active\s*\{\s*background:\s*var\(--category-brown\);\s*color:\s*var\(--category-cream\)/);
+const illustration = html.slice(html.indexOf('<!-- Left: Illustration'), html.indexOf('<!-- Right: Text content'));
+for (const colour of ['#77B247', '#5A833B', '#BEC8FF', '#231F20', '#F5C69E']) {
+  assert.ok(illustration.includes(`fill="${colour}"`), `original character colour ${colour} remains`);
+}
 
 const dom = new JSDOM(html, {
   url: 'https://portfolio.example/', runScripts: 'outside-only', pretendToBeVisual: true,
