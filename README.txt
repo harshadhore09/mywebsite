@@ -20,6 +20,9 @@ Raster source assets were converted to high-quality WebP (JPEGs are capped at 2,
 
 To regenerate the local Tailwind stylesheet after changing homepage utility classes, run `tools/build-tailwind-css.sh` (requires Node/npm and internet access to the npm registry). The generated file is `assets/tailwind.css`.
 
+## Homepage palette
+The homepage uses Merino (`#F5EEDD`), Rock Blue (`#84B3CE`), and Venice Blue (`#16587B`). The palette and supporting contrast-friendly shades are defined in the `:root` block of `index.html`; the hero, artwork accents, controls, toolkit, contact section, and homepage project-opening curtain follow those colours. The case-study pages and project cover images keep their own visual identities. Some colours also appear in homepage utility classes and the small JavaScript effects, so update those and rebuild Tailwind if the palette changes.
+
 ## Tests
 The jsdom test dependency is only needed for local verification; it is not part of the deployed site.
 
@@ -37,7 +40,7 @@ All three case studies share a warm, full-screen title curtain. Normal project c
 ## About section
 The About panel is an interactive field journal, and all of its copy lives in `index.html`, no build step.
 
-- The headline names three positions, what users *say*, what they *actually do*, and what *business metrics demand*, each with a hover/focus tooltip (the three tags are stored as `data-tag` / `data-note` on the `<span>`s). The green third accent is `.measure-word`.
+- The headline names three positions, what users *say*, what they *actually do*, and what *business metrics demand*, each with a hover/focus tooltip (the three tags are stored as `data-tag` / `data-note` on the `<span>`s). The third accent is `.measure-word`.
 - The drag-to-compare box starts fully on *stated behaviour*; dragging, tapping or the arrow keys wipe *observed behaviour* across it. The auto-nudge first sweeps it open and closes again so the gesture is obvious.
 - The four profile tabs are `<template>` blocks (`#skill-belief`, `#skill-background`, `#skill-process`, `#skill-path`), so a tab can hold paragraphs, a bulleted list or an ordered list. The drawer measures its own content, so longer copy is never clipped. Tabs expose `aria-expanded` and keep focus on the clicked chip.
 - The sprout cycles 🌱 → 🌿 → 🪴 → 🌳 → 🌸 and its badge with it (open to roles → product & ux → behaviour design → design research → IIT Delhi M.Des), then loops. The badge starts on *open to roles*.
