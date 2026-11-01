@@ -7,7 +7,6 @@
 - `MedicalAdher_index.html`, Medical Adherence case study
 - `slides/`, standalone vector slide fragments, loaded as the reader approaches them
 - `assets/` and `images/`, optimized WebP artwork and the precompiled Tailwind stylesheet
-- `scripts/hero-topography.js`, the homepage hero's animated contour field
 - `scripts/lazy-slides.js`, shared progressive artwork loader
 - `scripts/project-transition.js` and `assets/project-transition.css`, shared project-opening curtain
 - `resume/Harsha_Dhore_CV_2026.pdf`, current CV linked from both homepage buttons (versioned filename avoids stale PDF caches)
@@ -30,7 +29,6 @@ node tools/lazy-slides/test.js
 node tools/slide-rail/test.js
 node tools/project-transition/test.js
 node tools/micro-interactions/test.js
-node tools/hero-topography/test.js
 ```
 
 ## Project opening transition
@@ -55,17 +53,6 @@ On every case study the cursor is a simple ring and dot, with no rupee symbol; h
 All three also share the same chrome-level touches: a light sweeps across the contact button on hover, nav pills and the back-to-top button lift on hover and settle on press, and text selection is tinted gold.
 
 The engine only runs for a fine pointer with motion allowed: touch readers, reduced-motion readers, and anyone whose browser never loads the file keep the native cursor, and switching the OS to reduced motion mid-visit retires the cursor immediately. The click bursts and glitter are capped and self-cleaning.
-
-## Hero background: Living Topography
-The homepage hero sits on a generative cartographic field (`scripts/hero-topography.js`, one `<canvas>` inside `div.hero-atmosphere`), drawn in the language of a bundled line study: hundreds of nested streamlines gathered into ribbons that meander and breathe across the frame. Nothing else on the page changed — layout, type, navigation, buttons and project sections are untouched, and the field is drawn inside the hero section rather than fixed over the document, so it never covers a case study or intercepts a click.
-
-- **Ribbons.** Four bundles of hairlines — a broad main current, a quieter flow above it, a thin return strand that braids through the middle, and short charcoal lines that drift out on the left. Every line in a bundle rides one shared spine, offset across the ribbon and given its own slow wobble, so the lines bunch on the inside of a bend, fan on the outside and slide past each other instead of running parallel.
-- **The spine.** Four harmonics per bundle (a long meander, a shoulder, a fold and a ripple). Wavelengths are kept long relative to the ribbon width, and each offset is capped at a fraction of the local radius of curvature, so the lines can never fold through themselves into cusps.
-- **Particles.** Seven to ten nodes, stratified across the hero, drift with a slow sine wobble. Nearby nodes join with hairline links, and the nearest node reaches for the cursor. Most are muted terracotta, a few charcoal.
-- **Palette and restraint.** Antique gold `rgba(168,127,92,…)` and charcoal `rgba(47,42,40,…)`, terracotta only for nodes, 0.6–0.95 px strokes, and roughly a third of the frame inked. A cream edge wash plus a soft diagonal scrim over the copy column keep the type crisp: measured over the hero, the darkest the field ever goes still leaves about 5:1 for body copy and 8:1 for the nav.
-- **Interaction.** The pointer is eased, never snapped. Where the cursor is, the ribbon gathers towards it (a gaussian falloff along the x axis, clamped so nothing jerks) while the whole field leans a pixel or two. Touch devices get the composition without the cursor layer.
-- **Cost.** 30 fps draw budget on a device-pixel-ratio-capped backing store (max 2×), no shadows or blur filters, sampling density tied to pixel width so a phone stays smooth. The loop parks when the tab is hidden or the hero scrolls out of view (`IntersectionObserver`), and `prefers-reduced-motion` replaces it with one settled still frame — including when the preference changes mid-visit.
-- **Seamless.** Every motion is a sine of elapsed time, so there is no reset, no beat and no visible seam.
 
 ## Hosting
 GitHub Pages is recommended for this static site. Keep the folder structure unchanged when deploying: the slide loader uses same-origin `fetch()`, so the pages need to be served over HTTP/HTTPS rather than opened directly with `file://`.
