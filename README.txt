@@ -21,7 +21,7 @@ Raster source assets were converted to high-quality WebP (JPEGs are capped at 2,
 To regenerate the local Tailwind stylesheet after changing homepage utility classes, run `tools/build-tailwind-css.sh` (requires Node/npm and internet access to the npm registry). The generated file is `assets/tailwind.css`.
 
 ## Homepage palette
-The homepage retains its warm cream (`#F5EEDD`) background and original colourful illustration. Its earth-tone palette uses blue-grey (`#94A5B3`) sparingly, with olive (`#71713B`), stone (`#E2DCD0`), taupe (`#8F7D6B`) and dark brown (`#3C1E06`) across the interface. A deeper olive is used where small text needs more contrast. The main tokens live in the `:root` block of `index.html`; some colours also appear in utility classes, so rebuild Tailwind after changing them. The case-study pages and project cover images retain their own visual identities.
+The homepage uses the light Palladian cream (`#EEE9DF`) as its primary background, with Oatmeal (`#C9C1B1`), Blue Fantastic (`#2C3B4D`), Burning Flame (`#FFB162`), Truffle Trouble (`#A35139`) and Abyssal Anchorfish Blue (`#1B2632`) as supporting colours. Orange and rust keep the page lively, with dark blue used mainly for ink and controls. The character illustration and existing credential, project and toolkit category colours remain unchanged. The main tokens live in the `:root` block of `index.html`; some colours also appear in utility classes, so rebuild Tailwind after changing them. The case-study pages and project cover images retain their own visual identities.
 
 ## Tests
 The jsdom test dependency is only needed for local verification; it is not part of the deployed site.
