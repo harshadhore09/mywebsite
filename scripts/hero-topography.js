@@ -10,7 +10,7 @@
    Design notes
    - Every motion is a sine of elapsed time, so the loop has no seam, reset or
      beat: the drawing keeps flowing without ever repeating a frame.
-   - Canvas is transparent; the warm ivory page shows through (no repaint of the
+   - Canvas is transparent; the cool teal-blue paper shows through (no repaint of the
      background, so text contrast stays exactly as designed).
    - Renders on a 30fps budget, parks when the tab is hidden or the hero is
      off-screen, and never animates under prefers-reduced-motion (still frame).
@@ -30,9 +30,9 @@
   var SMALL = window.matchMedia('(max-width: 767px)');
   var TAU = Math.PI * 2;
 
-  var INK = '47, 42, 40';            // charcoal
-  var WARM = '168, 127, 92';         // muted antique gold / sand
-  var ACCENT = '186, 114, 88';       // muted terracotta
+  var INK = '53, 94, 104';           // deep, muted teal
+  var CONTOUR = '96, 141, 152';      // dusty teal-blue contours
+  var ACCENT = '72, 127, 144';       // quiet blue-green survey nodes
   var FRAME_MS = 1000 / 30;          // slow motion reads fine at 30fps
 
   var state = {
@@ -79,17 +79,17 @@
   // these cover roughly a third of the frame and let the type breathe.
   var BUNDLES = [
     {
-      cy: 0.6, lines: 52, spread: 0.107, alpha: 0.18, ink: WARM,
+      cy: 0.6, lines: 52, spread: 0.107, alpha: 0.18, ink: CONTOUR,
       steps: 106, width: 0.7, drift: 1
     },
     {
-      cy: 0.235, lines: 27, spread: 0.052, alpha: 0.125, ink: WARM,
+      cy: 0.235, lines: 27, spread: 0.052, alpha: 0.125, ink: CONTOUR,
       steps: 92, width: 0.65, drift: 0.85
     },
     {
       // a thin return flow that crosses the main current: the braid is what
       // reads as behaviour running into behaviour
-      cy: 0.735, lines: 22, spread: 0.052, alpha: 0.095, ink: WARM,
+      cy: 0.735, lines: 22, spread: 0.052, alpha: 0.095, ink: CONTOUR,
       steps: 96, width: 0.62, drift: 0.9, cross: true
     },
     {
@@ -163,7 +163,7 @@
           // the wobble stays calm on a phone instead of crinkling
           fanFreq: (1.26 * w) / (240 + rand() * 300),
           start: trimmed < 0.22 ? rand() * 0.22 : 0,
-          // the short charcoal strand tapers: its lines stop at staggered
+          // the short deep-teal strand tapers: its lines stop at staggered
           // points, so it never looks cut off with a straight edge
           end: (1 - (trimmed > 0.78 ? rand() * 0.22 : 0)) *
                (spec.until ? spec.until * (0.82 + rand() * 0.36) : 1),
@@ -236,7 +236,7 @@
         r: 0.9 + rand() * 1.3,
         phase: rand() * TAU,
         wobble: 0.55 + rand() * 0.9,
-        accent: rand() > 0.35,          // terracotta, with a few charcoal nodes
+        accent: rand() > 0.35,          // teal-blue, with a few deep-teal nodes
         alpha: 0.46 + rand() * 0.3
       });
     }

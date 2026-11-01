@@ -69,7 +69,7 @@ const contours = (paint) => paint.paths.filter((p) => p.points.length > 40);
 
 async function main() {
   /* ---- 1. wiring: the field lives in the hero, not floating over the page -- */
-  const atmosphere = /<div class="hero-atmosphere" aria-hidden="true">\s*<canvas class="topo-canvas" data-topography><\/canvas>/.test(html);
+  const atmosphere = /<div class="hero-atmosphere" aria-hidden="true">[\s\S]*?<canvas class="topo-canvas" data-topography><\/canvas>[\s\S]*?<\/div>/.test(html);
   assert.ok(atmosphere, 'hero owns an aria-hidden atmosphere layer with the canvas');
 
   const heroAt = html.indexOf('<section class="hero-new');
@@ -83,11 +83,23 @@ async function main() {
   /* ---- 2. css keeps it behind content and inert ---------------------------- */
   assert.match(html, /\.hero-atmosphere\s*\{[^}]*position: absolute;[^}]*pointer-events: none;/, 'layer is absolute and inert');
   assert.match(html, /\.topo-canvas\s*\{[^}]*pointer-events|\.hero-atmosphere\s*\{[^}]*pointer-events: none;/, 'no pointer capture');
-  assert.match(html, /\.hero-atmosphere::after\s*\{[^}]*radial-gradient/, 'cream wash keeps copy crisp');
+  assert.match(html, /\.hero-atmosphere::after\s*\{[^}]*radial-gradient/, 'paper wash keeps copy crisp');
   assert.match(html, /@media \(prefers-reduced-motion: reduce\) \{\s*\.topo-canvas \{ transition: none; \}/, 'css respects reduced motion');
+  assert.match(html, /\.hero-grain\s*\{[^}]*pointer-events: none;[^}]*mix-blend-mode: multiply;[^}]*feTurbulence[^}]*stitchTiles/, 'fine grain is inert, softly blended and seamlessly tiled');
+  assert.doesNotMatch(html, /\.hero-grain\s*\{[^}]*animation:/, 'grain never flickers or adds animation work');
+  assert.match(html, /@media print \{\s*\.hero-atmosphere \{ display: none; \}/, 'decorative atmosphere is omitted from print');
+  assert.match(html, /@media \(max-width: 1023px\) \{\s*\.hero-role-backdrop \{[^}]*font-size: clamp\(/, 'role lettering scales down on smaller screens');
+  assert.doesNotMatch(html, /<section class="hero-new[^>]*style="[^"]*background:/, 'no inline background overrides the teal-blue paper');
 
   /* ---- 3. it draws, it does not flood, it animates ------------------------- */
   const live = harness();
+  const role = live.w.document.querySelector('.hero-role-backdrop');
+  assert.equal(role.textContent.replace(/\s+/g, ' ').trim(), 'Product & Behavioural Designer', 'the actual role appears in the background');
+  assert.equal(role.closest('[aria-hidden="true"]').className, 'hero-atmosphere', 'decorative role is hidden from assistive technology');
+  assert.equal(live.w.document.querySelectorAll('h1').length, 1, 'backdrop does not introduce another page heading');
+  assert.ok(role.parentElement.querySelector('.hero-grain'), 'grain shares the inert hero atmosphere');
+  assert.equal(live.w.getComputedStyle(role).userSelect, 'none', 'backdrop cannot be accidentally selected');
+  assert.equal(live.w.getComputedStyle(role.parentElement).pointerEvents, 'none', 'backdrop and grain cannot intercept clicks');
   assert.ok(live.paint.strokes > 0, 'first frame paints before any rAF');
   assert.ok(live.canvas.classList.contains('is-ready'), 'canvas revealed');
   assert.equal(live.canvas.width, 1440, 'backing store matches css width');
@@ -118,7 +130,7 @@ async function main() {
   /* strokes stay hairline, and the palette stays muted */
   for (const curve of curves.slice(0, 24)) {
     assert.ok(curve.width <= 1, 'hairline strokes');
-    assert.match(curve.style, /^rgba\((47, 42, 40|168, 127, 92|186, 114, 88),0\.\d+\)$/, 'charcoal, antique gold or terracotta only');
+    assert.match(curve.style, /^rgba\((53, 94, 104|96, 141, 152|72, 127, 144),0\.\d+\)$/, 'deep teal, dusty teal-blue or blue-green only');
   }
 
   /* the bundle is nested: consecutive streamlines sit close together */
@@ -141,7 +153,7 @@ async function main() {
 
   /* particles exist and never leave the hero */
   assert.ok(live.paint.fills > 0, 'particles painted');
-  assert.match(live.paint.lastFill.style, /^rgba\((47, 42, 40|186, 114, 88),0\.\d+\)$/, 'particles reuse the palette');
+  assert.match(live.paint.lastFill.style, /^rgba\((53, 94, 104|72, 127, 144),0\.\d+\)$/, 'particles reuse the teal-blue palette');
 
   /* ---- 5. pointer interaction -------------------------------------------- */
   const settled = contours(live.paint).at(-1);

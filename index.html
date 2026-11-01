@@ -20,6 +20,7 @@
       --pink: #E8A9C3;
       --warm: #D9B68C;
       --accent: #C17A5F;
+      --hero-paper: #F2F7F6;
     }
 
     * {
@@ -106,8 +107,8 @@
       transform: translate(-50%, -50%) scale(0.3);
     }
 
-    /* === LIVING TOPOGRAPHY — hero background === */
-    /* Sits inside the hero, behind every piece of content. Never receives input. */
+    /* === HERO ATMOSPHERE — teal-blue contours, role lettering & paper grain === */
+    /* All decoration stays inside the hero and behind its interactive content. */
     .hero-atmosphere {
       position: absolute;
       inset: 0;
@@ -115,11 +116,52 @@
       pointer-events: none;
       overflow: hidden;
       contain: layout paint;
+      background-image:
+        radial-gradient(ellipse at 12% 76%, rgba(108, 169, 175, 0.18), transparent 58%),
+        radial-gradient(ellipse at 90% 16%, rgba(108, 153, 181, 0.13), transparent 54%);
+    }
+
+    /* The role is a quiet typographic backdrop, not a second heading. */
+    .hero-role-backdrop {
+      position: absolute;
+      inset: 12% 0 7%;
+      z-index: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: .035em;
+      font-family: 'Space Grotesk', system-ui, sans-serif;
+      font-size: clamp(100px, 12.7vw, 192px);
+      font-weight: 600;
+      line-height: .84;
+      letter-spacing: -.065em;
+      text-align: center;
+      text-transform: uppercase;
+      white-space: nowrap;
+      color: rgba(57, 115, 131, 0.12);
+      user-select: none;
+    }
+
+    .hero-role-backdrop span { display: block; }
+
+    /* A small, stitched noise tile adds texture without another network request.
+       It is deliberately static: no flicker, animation loop or scroll work. */
+    .hero-grain {
+      position: absolute;
+      inset: 0;
+      z-index: 4;
+      pointer-events: none;
+      opacity: .14;
+      mix-blend-mode: multiply;
+      background-image: url('data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22180%22 height=%22180%22 viewBox=%220 0 180 180%22%3E%3Cfilter id=%22grain%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%22.85%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3CfeColorMatrix type=%22saturate%22 values=%220%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23grain)%22/%3E%3C/svg%3E');
+      background-size: 180px 180px;
     }
 
     .topo-canvas {
       position: absolute;
       inset: 0;
+      z-index: 1;
       display: block;
       width: 100%;
       height: 100%;
@@ -131,17 +173,18 @@
       opacity: 1;
     }
 
-    /* Cream wash at the edges: keeps the field airy and copy crisp. */
+    /* A cool paper wash at the edges keeps the field airy and copy crisp. */
     .hero-atmosphere::after {
       content: '';
       position: absolute;
       inset: 0;
+      z-index: 3;
       pointer-events: none;
       background-image: radial-gradient(
         118% 88% at 50% 44%,
-        rgba(248, 245, 239, 0) 40%,
-        rgba(248, 245, 239, 0.34) 82%,
-        rgba(248, 245, 239, 0.62) 100%
+        rgba(242, 247, 246, 0) 40%,
+        rgba(242, 247, 246, 0.34) 82%,
+        rgba(242, 247, 246, 0.62) 100%
       );
     }
 
@@ -152,22 +195,27 @@
       position: absolute;
       inset: 0;
       pointer-events: none;
-      z-index: 1;
+      z-index: 2;
       background-image: linear-gradient(
         100deg,
-        rgba(248, 245, 239, 0) 36%,
-        rgba(248, 245, 239, 0.4) 60%,
-        rgba(248, 245, 239, 0.58) 100%
+        rgba(242, 247, 246, 0) 36%,
+        rgba(242, 247, 246, 0.4) 60%,
+        rgba(242, 247, 246, 0.58) 100%
       );
     }
 
     @media (max-width: 1023px) {
+      .hero-role-backdrop {
+        inset: 14% 0 18%;
+        font-size: clamp(38px, 13vw, 100px);
+      }
+
       .hero-atmosphere::before {
         background-image: linear-gradient(
           to bottom,
-          rgba(248, 245, 239, 0) 34%,
-          rgba(248, 245, 239, 0.22) 62%,
-          rgba(248, 245, 239, 0.36) 100%
+          rgba(242, 247, 246, 0) 34%,
+          rgba(242, 247, 246, 0.22) 62%,
+          rgba(242, 247, 246, 0.36) 100%
         );
       }
     }
@@ -176,24 +224,29 @@
       .topo-canvas { transition: none; }
     }
 
-    /* HERO - Reference style (from image) */
+    /* HERO — the existing layout, on cool, finely grained paper. */
     .hero-new {
       min-height: 100svh;
       position: relative;
-      background: #F8F5EF;
+      isolation: isolate;
+      background: var(--hero-paper);
     }
 
-    /* Soft grid for hero only (to match reference) */
+    /* The grid picks up the same quiet teal-blue as the contour field. */
     .hero-new::before {
       content: '';
       position: absolute;
       inset: 0;
-      background-image: 
-        linear-gradient(rgba(226, 219, 203, 0.55) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(226, 219, 203, 0.55) 1px, transparent 1px);
+      background-image:
+        linear-gradient(rgba(96, 141, 152, 0.12) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(96, 141, 152, 0.12) 1px, transparent 1px);
       background-size: 60px 60px;
       pointer-events: none;
       z-index: 1;
+    }
+
+    @media print {
+      .hero-atmosphere { display: none; }
     }
 
     /* Remove old hero styles */
@@ -1251,11 +1304,17 @@
   <div id="cursor" class="custom-cursor"></div>
   <div id="cursor-dot" class="custom-cursor-dot"></div>
 
-  <!-- HERO - Exact match to reference image -->
-  <section class="hero-new relative min-h-[100svh] flex flex-col pt-6 pb-12 overflow-hidden" style="background: #F8F5EF;">
-    <!-- LIVING TOPOGRAPHY · decorative, non-interactive, aria-hidden -->
+  <!-- HERO — cool paper grain and a quiet role backdrop -->
+  <section class="hero-new relative min-h-[100svh] flex flex-col pt-6 pb-12 overflow-hidden">
+    <!-- Decorative only: hidden from assistive technology and inert to input. -->
     <div class="hero-atmosphere" aria-hidden="true">
+      <div class="hero-role-backdrop">
+        <span>Product &amp;</span>
+        <span>Behavioural</span>
+        <span>Designer</span>
+      </div>
       <canvas class="topo-canvas" data-topography></canvas>
+      <div class="hero-grain"></div>
     </div>
 
     <!-- Top pill nav bar (from reference) -->
