@@ -1,4 +1,5 @@
 const assert = require('node:assert/strict');
+const crypto = require('node:crypto');
 const fs = require('node:fs');
 const path = require('node:path');
 const { JSDOM } = require(process.env.JSDOM_PATH || '/tmp/node_modules/jsdom');
@@ -11,7 +12,7 @@ const token = (name) => {
   return value[1].toUpperCase();
 };
 
-// WCAG contrast for the small-text combinations used by buttons and chips.
+// WCAG contrast for text on the restored cream and category fills.
 function contrast(a, b) {
   const luminance = (hex) => {
     const rgb = hex.match(/[\da-f]{2}/gi).map((x) => parseInt(x, 16) / 255)
@@ -23,40 +24,44 @@ function contrast(a, b) {
 }
 
 const colours = {
-  cream: token('cream'), oatmeal: token('oatmeal'), blue: token('blue-fantastic'),
-  flame: token('burning-flame'), truffle: token('truffle'), abyssal: token('abyssal'),
-  accentInk: token('accent-ink'), categoryBlue: token('category-blue'),
-  categoryOlive: token('category-olive'), categoryStone: token('category-stone'),
-  categoryBrown: token('category-brown'), categoryCream: token('category-cream'),
+  cream: token('cream'), grid: token('grid'), text: token('text'), muted: token('muted'),
+  pink: token('pink'), warm: token('warm'), accent: token('accent'),
+  behaviour: token('b'), craft: token('c'), tools: token('t'), toolkitInk: token('tk-ink'),
 };
 assert.deepEqual(colours, {
-  cream: '#EEE9DF', oatmeal: '#C9C1B1', blue: '#2C3B4D', flame: '#FFB162',
-  truffle: '#A35139', abyssal: '#1B2632', accentInk: '#81412F',
-  categoryBlue: '#94A5B3', categoryOlive: '#71713B', categoryStone: '#E2DCD0',
-  categoryBrown: '#3C1E06', categoryCream: '#F5EEDD',
+  cream: '#F8F5EF', grid: '#E8E4D9', text: '#2B2228', muted: '#665C5C',
+  pink: '#E8A9C3', warm: '#D9B68C', accent: '#C17A5F',
+  behaviour: '#9B7CC4', craft: '#C17A5F', tools: '#4C8C6B', toolkitInk: '#231014',
 });
 for (const [foreground, background] of [
-  [colours.abyssal, colours.cream], [colours.abyssal, colours.flame],
-  [colours.blue, colours.oatmeal], ['#FFFFFF', colours.truffle],
-  [colours.accentInk, colours.cream], ['#FFFFFF', colours.categoryOlive],
-  [colours.categoryBrown, colours.categoryBlue],
-  [colours.categoryBrown, colours.categoryStone],
-  [colours.categoryCream, colours.categoryBrown],
+  [colours.text, colours.cream], [colours.muted, colours.cream],
+  [colours.toolkitInk, colours.behaviour], [colours.toolkitInk, colours.craft],
+  [colours.toolkitInk, colours.tools], [colours.toolkitInk, '#F9E8C3'],
+  ['#7A6F6A', '#FFFDF7'],
 ]) assert.ok(contrast(foreground, background) >= 4.5, `${foreground} on ${background} meets 4.5:1`);
 
-// jsdom cannot resolve CSS custom properties, so check the relevant selector
-// wiring here and exercise the actual toolkit state changes independently.
-assert.match(css, /\.tk-chip\[data-cat="behaviour"\]\.pinned\.weak-hit\s*\{\s*color:\s*var\(--category-brown\)/);
-assert.match(css, /\.tk-cat\[data-cat="behaviour"\]\s*\{\s*background:\s*var\(--b\);\s*color:\s*var\(--category-brown\)/);
-assert.match(css, /\.tk-chip\.pinned mark\s*\{\s*background:\s*var\(--category-stone\);\s*color:\s*var\(--category-brown\)/);
-assert.match(css, /\.hero-tags \.chip:nth-child\(1\)\s*\{\s*background:\s*var\(--category-blue\)/);
-assert.match(css, /\.work-card:nth-child\(2\) \.work-badge\s*\{\s*background:\s*var\(--category-olive\)/);
-assert.match(css, /\.tk\s*\{\s*--b:var\(--category-blue\);\s*--c:var\(--category-brown\);\s*--t:var\(--category-olive\)/);
-assert.match(css, /\.skill-grid \.skill\.active\s*\{\s*background:\s*var\(--category-brown\);\s*color:\s*var\(--category-cream\)/);
-const illustration = html.slice(html.indexOf('<!-- Left: Illustration'), html.indexOf('<!-- Right: Text content'));
-for (const colour of ['#77B247', '#5A833B', '#BEC8FF', '#231F20', '#F5C69E']) {
-  assert.ok(illustration.includes(`fill="${colour}"`), `original character colour ${colour} remains`);
+// jsdom cannot resolve CSS custom properties: check the visual wiring here,
+// then exercise the real toolkit state changes below.
+assert.match(css, /\.top-nav\s*\{\s*background:\s*#F9E8C3;\s*border-color:\s*#F0D9A3/i);
+assert.match(css, /\.hero-name\s*\{[^}]*color:\s*#9B2D2D/i);
+assert.match(css, /\.hero-tags \.chip\s*\{[^}]*background:\s*#F9E8C3;\s*color:\s*#3F2A1F/i);
+assert.match(css, /\.orb-1\s*\{\s*background:\s*#D9B68C/i);
+assert.match(css, /\.orb-2\s*\{\s*background:\s*#E8A9C3/i);
+assert.match(css, /\.orb-3\s*\{\s*background:\s*#C8B8E0/i);
+assert.ok(html.includes("color: ['#D9B68C', '#E8A9C3', '#C8B8E0']"), 'canvas particles use original colours');
+assert.match(css, /\.tk-chip\.pinned\s*\{[^}]*color:\s*var\(--tk-ink\)/);
+assert.match(css, /\.tk-chip\.pinned\.weak-hit\s*\{\s*color:\s*var\(--tk-ink\)/);
+assert.match(css, /\.tk-chip\.pinned mark\s*\{\s*background:\s*#F9E8C3;\s*color:\s*var\(--tk-ink\)/i);
+for (const [category, colour] of [['behaviour', 'b'], ['craft', 'c'], ['tools', 't']]) {
+  assert.match(css, new RegExp(`\\.tk-cat\\[data-cat="${category}"\\]\\s*\\{\\s*background:\\s*var\\(--${colour}\\)`));
 }
+for (const oldToken of ['--oatmeal', '--blue-fantastic', '--burning-flame', '--truffle', '--abyssal']) {
+  assert.ok(!html.includes(oldToken), `${oldToken} from the superseded palette is gone`);
+}
+const illustration = html.slice(html.indexOf('<!-- Left: Illustration'), html.indexOf('<!-- Right: Text content'));
+assert.equal(crypto.createHash('sha256').update(illustration).digest('hex'),
+  '37e95f2a9d96ec2e5326b46263c52c2e8ee03c3eb2ecb6a47c5afba1ed02634b',
+  'the original character illustration is unchanged');
 
 const dom = new JSDOM(html, {
   url: 'https://portfolio.example/', runScripts: 'outside-only', pretendToBeVisual: true,
@@ -70,8 +75,16 @@ assert.ok(start !== -1 && end !== -1, 'toolkit initializer exists');
 w.eval(html.slice(start, end) + '\ninitToolkit();');
 
 const doc = w.document;
+const badges = [...doc.querySelectorAll('.work-card .absolute span')];
+assert.equal(badges.length, 3, 'all three original project badges remain');
+for (const badge of badges) {
+  assert.ok(badge.classList.contains('bg-white/95') && badge.classList.contains('text-[#2B2228]'),
+    'project badges use the original white and dark ink');
+}
+assert.ok(doc.getElementById('toolkit').classList.contains('bg-[#F4F0E7]'), 'original toolkit background');
 const cat = doc.getElementById('tkCat');
 const chips = [...doc.querySelectorAll('.tk-chip')];
+assert.equal(chips.length, 20, 'all toolkit items remain');
 for (const category of ['behaviour', 'craft', 'tools']) {
   const chip = chips.find((item) => item.dataset.cat === category);
   chip.click();
@@ -95,4 +108,4 @@ doc.querySelector('.tk-filter[data-cat="craft"]').click();
 assert.equal(behaviour.getAttribute('aria-hidden'), 'true', 'category filter hides other categories');
 assert.equal(chips.find((item) => item.dataset.cat === 'craft').getAttribute('aria-hidden'), 'false');
 w.close();
-console.log('Homepage palette tests passed (reference colours, contrast, toolkit pinning, highlights and filtering).');
+console.log('Homepage palette tests passed (original colours, contrast, toolkit pinning, highlights and filtering).');
