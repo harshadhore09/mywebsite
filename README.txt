@@ -21,7 +21,7 @@ Raster source assets were converted to high-quality WebP (JPEGs are capped at 2,
 To regenerate the local Tailwind stylesheet after changing homepage utility classes, run `tools/build-tailwind-css.sh` (requires Node/npm and internet access to the npm registry). The generated file is `assets/tailwind.css`.
 
 ## Homepage palette
-The homepage keeps the warm Merino cream (`#F5EEDD`) background and its original colourful illustration and accents. Sandstone, a soft Dusk Grey wash, and New York Steel are used sparingly, alongside coral, purple and green highlights. The main tokens live in the `:root` block of `index.html`; some colours also appear in utility classes and JavaScript effects, so rebuild Tailwind after changing utility classes. The case-study pages and project cover images retain their own visual identities.
+The homepage retains its warm cream (`#F5EEDD`) background and original colourful illustration. Its earth-tone palette uses blue-grey (`#94A5B3`) sparingly, with olive (`#71713B`), stone (`#E2DCD0`), taupe (`#8F7D6B`) and dark brown (`#3C1E06`) across the interface. A deeper olive is used where small text needs more contrast. The main tokens live in the `:root` block of `index.html`; some colours also appear in utility classes, so rebuild Tailwind after changing them. The case-study pages and project cover images retain their own visual identities.
 
 ## Tests
 The jsdom test dependency is only needed for local verification; it is not part of the deployed site.
@@ -32,6 +32,7 @@ node tools/lazy-slides/test.js
 node tools/slide-rail/test.js
 node tools/project-transition/test.js
 node tools/micro-interactions/test.js
+node tools/homepage-palette/test.js
 ```
 
 ## Project opening transition
